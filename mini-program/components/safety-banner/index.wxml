@@ -1,0 +1,24 @@
+<view wx:if="{{count > 0}}" class="sb">
+  <view class="sb-head" bindtap="onToggle">
+    <view class="sb-icon">🛡️</view>
+    <view class="sb-head-main">
+      <view class="sb-title">
+        {{title}}
+        <text class="sb-count">{{count}}</text>
+      </view>
+      <view class="sb-sub">已按「器械 / 空间 / 身体限制 / 能力门槛」四类硬过滤处理</view>
+    </view>
+    <text wx:if="{{collapsible}}" class="sb-arrow {{expanded ? 'sb-arrow--open' : ''}}">⌄</text>
+  </view>
+  <view wx:if="{{expanded}}" class="sb-list">
+    <view class="sb-item" wx:for="{{intercepts}}" wx:key="action_id">
+      <view class="sb-item-hd">
+        <text class="sb-rule">{{item.rule_id}}</text>
+        <text class="sb-action">{{item.action_name}}</text>
+      </view>
+      <view class="sb-reason">{{item.reason}}</view>
+      <view wx:if="{{item.replaced_by_name}}" class="sb-replace">→ 已替换为：{{item.replaced_by_name}}</view>
+    </view>
+    <view class="sb-note">安全判断来自独立规则表，不依赖知识图谱与大模型。</view>
+  </view>
+</view>

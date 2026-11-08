@@ -1,0 +1,8 @@
+<view class="stepper {{disabled ? 'stepper--disabled' : ''}}">
+  <view class="stepper-btn" bindtap="onMinus">−</view>
+  <view class="stepper-value">
+    <text class="stepper-num">{{value}}</text>
+    <text wx:if="{{unit}}" class="stepper-unit">{{unit}}</text>
+  </view>
+  <view class="stepper-btn" bindtap="onPlus">＋</view>
+</view>

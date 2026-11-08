@@ -1,0 +1,25 @@
+{
+  "description": "校练——面向校园约束场景的大学生体测训练计划小程序（原生 JS，不使用云开发）",
+  "appid": "wx9c4aac9029c3e66e",
+  "projectname": "xiaolian",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "packNpmManually": false,
+    "useCompilerPlugins": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
+}

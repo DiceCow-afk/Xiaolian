@@ -1,0 +1,64 @@
+/* 标签选择器（组件内样式隔离） */
+.tp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.tp--cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+.tp-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 16rpx 28rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  color: #3a4356;
+  background: #f4f6fa;
+  border: 2rpx solid transparent;
+  transition: all 0.16s ease;
+}
+.tp-item--disabled {
+  opacity: 0.5;
+}
+.tp-item:active {
+  transform: scale(0.97);
+}
+.tp-item--checked {
+  color: #ff6b2c;
+  font-weight: 600;
+  background: #fff1ea;
+  border-color: #ff6b2c;
+}
+.tp--cards .tp-item {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 20rpx 22rpx;
+  border-radius: 20rpx;
+  min-height: 96rpx;
+}
+.tp-label {
+  font-size: 26rpx;
+  line-height: 1.4;
+}
+.tp-desc {
+  font-size: 20rpx;
+  line-height: 1.5;
+  color: #7b8496;
+}
+.tp-item--checked .tp-desc {
+  color: #c2500f;
+}
+.tp-check {
+  position: absolute;
+  right: 14rpx;
+  top: 10rpx;
+  font-size: 22rpx;
+  color: #ff6b2c;
+}

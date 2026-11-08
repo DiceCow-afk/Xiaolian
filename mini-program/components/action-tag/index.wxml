@@ -1,0 +1,11 @@
+<view class="at {{selected ? 'at--selected' : ''}}" bindtap="onTap">
+  <view class="at-main">
+    <text wx:if="{{action.role_label}}" class="at-role at-role--{{action.role}}">{{action.role_label}}</text>
+    <text class="at-name">{{action.name}}</text>
+  </view>
+  <view class="at-side">
+    <text wx:if="{{showMeta && action.reps_text}}" class="at-reps">{{action.reps_text}}</text>
+    <text wx:if="{{showMeta && action.rest_text}}" class="at-rest">休息 {{action.rest_text}}</text>
+  </view>
+  <text class="at-arrow">›</text>
+</view>

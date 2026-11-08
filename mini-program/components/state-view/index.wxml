@@ -1,0 +1,20 @@
+<view class="sv-wrap" style="min-height: {{minHeight}}">
+  <view wx:if="{{state === 'loading'}}" class="sv">
+    <view class="sv-spinner">
+      <view class="sv-spinner-ring"></view>
+      <text class="sv-spinner-dot">校</text>
+    </view>
+    <text class="sv-text">{{text || '加载中…'}}</text>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="sv">
+    <text class="sv-icon">😵</text>
+    <text class="sv-title">{{errorTitle}}</text>
+    <text class="sv-text">{{text || '网络开小差了，请稍后重试'}}</text>
+    <view class="sv-retry" bindtap="onRetry">{{retryText}}</view>
+  </view>
+
+  <view wx:else class="sv-done">
+    <slot></slot>
+  </view>
+</view>

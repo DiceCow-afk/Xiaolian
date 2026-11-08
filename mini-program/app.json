@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/constraints/constraints",
+    "pages/plan/plan",
+    "pages/checkin/checkin",
+    "pages/feedback/feedback",
+    "pages/diet/diet",
+    "pages/action/action"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FF6B2C",
+    "navigationBarTitleText": "校练",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F4F6FA",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#8A94A6",
+    "selectedColor": "#FF6B2C",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/plan/plan",
+        "text": "计划",
+        "iconPath": "assets/icons/tab-plan.png",
+        "selectedIconPath": "assets/icons/tab-plan-active.png"
+      },
+      {
+        "pagePath": "pages/checkin/checkin",
+        "text": "打卡",
+        "iconPath": "assets/icons/tab-checkin.png",
+        "selectedIconPath": "assets/icons/tab-checkin-active.png"
+      },
+      {
+        "pagePath": "pages/feedback/feedback",
+        "text": "反馈",
+        "iconPath": "assets/icons/tab-feedback.png",
+        "selectedIconPath": "assets/icons/tab-feedback-active.png"
+      },
+      {
+        "pagePath": "pages/diet/diet",
+        "text": "饮食",
+        "iconPath": "assets/icons/tab-diet.png",
+        "selectedIconPath": "assets/icons/tab-diet-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {}
+}

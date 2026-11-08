@@ -1,0 +1,69 @@
+/* 空状态（组件内样式隔离） */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 72rpx 48rpx;
+  text-align: center;
+}
+.empty-icon-wrap {
+  position: relative;
+  width: 140rpx;
+  height: 140rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.empty-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 4rpx dashed #ffd9c7;
+  animation: empty-rotate 18s linear infinite;
+}
+.empty-icon {
+  font-size: 66rpx;
+  line-height: 1;
+}
+@keyframes empty-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.empty-title {
+  margin-top: 28rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #172033;
+}
+.empty-desc {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #7b8496;
+  max-width: 520rpx;
+}
+.empty-btn {
+  margin-top: 32rpx;
+  padding: 22rpx 52rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6b2c 0%, #ff8f4d 100%);
+  box-shadow: 0 12rpx 26rpx rgba(255, 107, 44, 0.28);
+}
+.empty-btn--ghost {
+  color: #ff6b2c;
+  background: #fff1ea;
+  box-shadow: none;
+}
+.empty-btn:active {
+  opacity: 0.86;
+}

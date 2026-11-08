@@ -1,0 +1,54 @@
+/* RPE 滑条（组件内样式隔离） */
+.rpe {
+  padding: 22rpx 24rpx;
+  border-radius: 20rpx;
+  background: #f7f9fc;
+}
+.rpe--disabled {
+  opacity: 0.6;
+}
+.rpe-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.rpe-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.rpe-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #172033;
+}
+.rpe-desc {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #7b8496;
+}
+.rpe-value-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 2rpx;
+}
+.rpe-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #ff6b2c;
+  line-height: 1;
+}
+.rpe-total {
+  font-size: 22rpx;
+  color: #a6adbb;
+}
+.rpe-slider {
+  margin: 12rpx 0 0;
+  padding: 0;
+}
+.rpe-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rpx;
+  font-size: 20rpx;
+  color: #a6adbb;
+}

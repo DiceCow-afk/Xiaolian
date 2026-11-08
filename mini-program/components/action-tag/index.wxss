@@ -1,0 +1,77 @@
+/* 动作标签（组件内样式隔离） */
+.at {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 16rpx;
+  background: #f7f9fc;
+  border: 2rpx solid transparent;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.at:active {
+  background: #fff1ea;
+  border-color: #ffd9c7;
+}
+.at--selected {
+  background: #fff1ea;
+  border-color: #ff6b2c;
+}
+.at-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.at-role {
+  flex-shrink: 0;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  font-size: 18rpx;
+  line-height: 1.6;
+  color: #7b8496;
+  background: #eef1f7;
+}
+.at-role--warmup {
+  color: #1c6bc4;
+  background: #eaf3ff;
+}
+.at-role--main {
+  color: #c2500f;
+  background: #fff1ea;
+}
+.at-role--cooldown {
+  color: #0d8f52;
+  background: #e7f8ef;
+}
+.at-name {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #172033;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.at-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rpx;
+  flex-shrink: 0;
+}
+.at-reps {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #ff6b2c;
+}
+.at-rest {
+  font-size: 20rpx;
+  color: #a6adbb;
+}
+.at-arrow {
+  flex-shrink: 0;
+  font-size: 30rpx;
+  color: #c3c9d4;
+  line-height: 1;
+}

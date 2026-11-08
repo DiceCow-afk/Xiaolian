@@ -1,0 +1,14 @@
+<view class="tp tp--{{layout}}">
+  <view
+    wx:for="{{items}}"
+    wx:key="value"
+    class="tp-item {{item.checked ? 'tp-item--checked' : ''}} {{disabled ? 'tp-item--disabled' : ''}}"
+    style="{{item.checked ? '--tp-accent:' + accent : ''}}"
+    data-index="{{index}}"
+    bindtap="onTap"
+  >
+    <text class="tp-label">{{item.label}}</text>
+    <text wx:if="{{item.desc && layout === 'cards'}}" class="tp-desc">{{item.desc}}</text>
+    <text wx:if="{{item.checked && layout === 'cards'}}" class="tp-check">✓</text>
+  </view>
+</view>

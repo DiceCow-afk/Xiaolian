@@ -1,0 +1,133 @@
+/* 计划卡片（组件内样式隔离，不依赖 app.wxss 的类） */
+.plan-card {
+  padding: 26rpx;
+  border-radius: var(--xl-radius, 28rpx);
+  background: #ffffff;
+  box-shadow: var(--xl-shadow, 0 12rpx 32rpx rgba(23, 32, 51, 0.06));
+  margin-bottom: 24rpx;
+}
+.plan-card--compact {
+  padding: 22rpx;
+  box-shadow: none;
+  border: 2rpx solid var(--xl-line, #e8ecf3);
+}
+.pc-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+}
+.pc-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 96rpx;
+  padding: 12rpx 8rpx;
+  border-radius: 18rpx;
+  background: var(--xl-brand-soft, #fff1ea);
+}
+.pc-day-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--xl-brand-deep, #f2551a);
+  line-height: 1.3;
+}
+.pc-date {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: var(--xl-muted, #7b8496);
+}
+.pc-title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+.pc-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--xl-ink, #172033);
+  line-height: 1.4;
+}
+.pc-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8rpx;
+  gap: 4rpx;
+}
+.pc-meta-item {
+  font-size: 22rpx;
+  color: var(--xl-muted, #7b8496);
+}
+.pc-meta-dot {
+  font-size: 20rpx;
+  color: var(--xl-muted-2, #a6adbb);
+}
+.pc-status {
+  flex-shrink: 0;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  color: var(--xl-muted, #7b8496);
+  background: #f2f5fa;
+}
+.pc-status--done {
+  color: #0d8f52;
+  background: var(--xl-success-soft, #e7f8ef);
+}
+.pc-status--partial {
+  color: #b96a00;
+  background: var(--xl-warning-soft, #fff6e6);
+}
+.pc-status--skipped {
+  color: var(--xl-muted, #7b8496);
+  background: #f2f5fa;
+}
+.pc-actions {
+  margin-top: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+.pc-notes {
+  margin-top: 18rpx;
+  display: flex;
+  gap: 10rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 16rpx;
+  background: #f7f9fc;
+}
+.pc-notes-icon {
+  font-size: 22rpx;
+  line-height: 1.6;
+}
+.pc-notes-text {
+  flex: 1;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--xl-muted, #7b8496);
+}
+.pc-foot {
+  margin-top: 22rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--xl-line-2, #f1f4f9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.pc-hint {
+  font-size: 22rpx;
+  color: var(--xl-muted-2, #a6adbb);
+}
+.pc-btn {
+  padding: 12rpx 28rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6b2c 0%, #ff8f4d 100%);
+}
+.pc-btn:active {
+  opacity: 0.86;
+}

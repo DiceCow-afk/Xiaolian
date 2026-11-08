@@ -1,0 +1,29 @@
+<view class="rpe {{disabled ? 'rpe--disabled' : ''}}">
+  <view class="rpe-head">
+    <view class="rpe-title-wrap">
+      <text class="rpe-title">RPE 主观用力程度</text>
+      <text class="rpe-desc">{{desc}}</text>
+    </view>
+    <view class="rpe-value-wrap">
+      <text class="rpe-value">{{displayValue}}</text>
+      <text class="rpe-total">/10</text>
+    </view>
+  </view>
+  <slider
+    class="rpe-slider"
+    min="{{min}}"
+    max="{{max}}"
+    step="1"
+    value="{{displayValue}}"
+    activeColor="#FF6B2C"
+    backgroundColor="#E8ECF3"
+    block-size="24"
+    disabled="{{disabled}}"
+    bindchange="onChange"
+    bindchanging="onChanging"
+  ></slider>
+  <view class="rpe-foot">
+    <text>{{leftText}}</text>
+    <text>{{rightText}}</text>
+  </view>
+</view>

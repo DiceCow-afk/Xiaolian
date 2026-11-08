@@ -1,0 +1,76 @@
+/* 加载 / 错误 / 内容三态（组件内样式隔离） */
+.sv-wrap {
+  display: block;
+}
+.sv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  text-align: center;
+}
+.sv-spinner {
+  position: relative;
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sv-spinner-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 6rpx solid #ffe3d4;
+  border-top-color: #ff6b2c;
+  animation: sv-spin 0.9s linear infinite;
+}
+.sv-spinner-dot {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #ff6b2c;
+}
+@keyframes sv-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sv-icon {
+  font-size: 64rpx;
+  line-height: 1;
+}
+.sv-title {
+  margin-top: 20rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #172033;
+}
+.sv-text {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #7b8496;
+  max-width: 520rpx;
+}
+.sv-retry {
+  margin-top: 28rpx;
+  padding: 18rpx 44rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #ff6b2c;
+  background: #fff1ea;
+}
+.sv-retry:active {
+  opacity: 0.84;
+}
+.sv-done {
+  display: block;
+}

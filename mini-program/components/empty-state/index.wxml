@@ -1,0 +1,14 @@
+<view class="empty">
+  <view class="empty-icon-wrap">
+    <text class="empty-icon">{{icon}}</text>
+    <view class="empty-ring"></view>
+  </view>
+  <text class="empty-title">{{title}}</text>
+  <text wx:if="{{desc}}" class="empty-desc">{{desc}}</text>
+  <view
+    wx:if="{{actionText}}"
+    class="empty-btn {{actionType === 'ghost' ? 'empty-btn--ghost' : ''}}"
+    bindtap="onAction"
+  >{{actionText}}</view>
+  <slot></slot>
+</view>

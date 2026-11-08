@@ -1,0 +1,44 @@
+/* 步进器（组件内样式隔离） */
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx;
+  border-radius: 999rpx;
+  background: #f4f6fa;
+}
+.stepper--disabled {
+  opacity: 0.5;
+}
+.stepper-btn {
+  width: 68rpx;
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #ff6b2c;
+  background: #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(23, 32, 51, 0.08);
+}
+.stepper-btn:active {
+  transform: scale(0.94);
+}
+.stepper-value {
+  min-width: 108rpx;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4rpx;
+}
+.stepper-num {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #172033;
+}
+.stepper-unit {
+  font-size: 22rpx;
+  color: #7b8496;
+}

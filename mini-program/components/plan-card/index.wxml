@@ -1,0 +1,43 @@
+<view class="plan-card {{mode === 'compact' ? 'plan-card--compact' : ''}}">
+  <view class="pc-head">
+    <view class="pc-day">
+      <text class="pc-day-label">{{session.day_label || '训练日'}}</text>
+      <text class="pc-date">{{session.date_md}}</text>
+    </view>
+    <view class="pc-title-wrap">
+      <view class="pc-title">{{session.title}}</view>
+      <view class="pc-meta">
+        <text class="pc-meta-item">⏱ {{session.duration_text}}</text>
+        <text class="pc-meta-dot">·</text>
+        <text class="pc-meta-item">📍 {{session.location}}</text>
+      </view>
+    </view>
+    <view
+      wx:if="{{showStatus && session.status}}"
+      class="pc-status pc-status--{{session.status}}"
+    >{{statusLabel}}</view>
+  </view>
+
+  <view class="pc-actions">
+    <action-tag
+      wx:for="{{session.actions}}"
+      wx:key="action_id"
+      action="{{item}}"
+      index="{{index}}"
+      show-meta="{{mode !== 'compact'}}"
+      bindselect="onActionTap"
+    ></action-tag>
+  </view>
+
+  <view wx:if="{{mode !== 'compact' && session.notes}}" class="pc-notes">
+    <text class="pc-notes-icon">💡</text>
+    <text class="pc-notes-text">{{session.notes}}</text>
+  </view>
+
+  <view wx:if="{{mode !== 'compact'}}" class="pc-foot">
+    <text class="pc-hint">{{session.actions.length}} 个动作 · 点击动作查看示范</text>
+    <view class="pc-btn" catchtap="onCheckin">
+      {{session.status === 'done' ? '查看打卡' : '去打卡'}}
+    </view>
+  </view>
+</view>

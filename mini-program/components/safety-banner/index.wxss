@@ -1,0 +1,100 @@
+/* 安全拦截提示（组件内样式隔离） */
+.sb {
+  border-radius: 20rpx;
+  background: #fff8f0;
+  border: 2rpx solid #ffe0c7;
+  padding: 20rpx 22rpx;
+}
+.sb-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+}
+.sb-icon {
+  font-size: 34rpx;
+  line-height: 1.2;
+}
+.sb-head-main {
+  flex: 1;
+  min-width: 0;
+}
+.sb-title {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #b45309;
+}
+.sb-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34rpx;
+  height: 34rpx;
+  padding: 0 8rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  color: #ffffff;
+  background: #f79009;
+}
+.sb-sub {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  line-height: 1.5;
+  color: #b96a00;
+}
+.sb-arrow {
+  font-size: 30rpx;
+  color: #b96a00;
+  transition: transform 0.2s ease;
+  line-height: 1.2;
+}
+.sb-arrow--open {
+  transform: rotate(180deg);
+}
+.sb-list {
+  margin-top: 18rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #ffe0c7;
+}
+.sb-item {
+  padding: 14rpx 16rpx;
+  border-radius: 14rpx;
+  background: rgba(255, 255, 255, 0.7);
+  margin-bottom: 12rpx;
+}
+.sb-item-hd {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.sb-rule {
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  font-size: 18rpx;
+  color: #b45309;
+  background: #ffedd5;
+}
+.sb-action {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #172033;
+}
+.sb-reason {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: #7b8496;
+}
+.sb-replace {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #0d8f52;
+}
+.sb-note {
+  margin-top: 6rpx;
+  font-size: 20rpx;
+  color: #b96a00;
+  text-align: center;
+}
