@@ -136,13 +136,15 @@ function addCheckin(record) {
 }
 
 /**
- * 以训练日（session_id）为粒度 upsert 打卡记录：
- * 同一训练日重复提交视为「更新打卡」，不产生重复记录（服务端同样以唯一键约束）。
+ * 以「计划 + 训练日」为粒度 upsert 打卡记录：
+ * 同一计划同一训练日重复提交视为「更新打卡」，不产生重复记录；
+ * 计划重算后（plan_id 变化）旧计划的打卡历史不会被覆盖，便于历史对账。
  */
 function upsertCheckin(record) {
   if (!record || !record.session_id) return addCheckin(record);
   const list = getCheckins().filter(function (item) {
-    return item.session_id !== record.session_id;
+    const samePlan = !record.plan_id || item.plan_id === record.plan_id;
+    return !(item.session_id === record.session_id && samePlan);
   });
   list.unshift(record);
   write(KEYS.checkins, list.slice(0, 200));
@@ -155,9 +157,12 @@ function getTodayCheckin() {
   const m = today.getMonth() + 1;
   const d = today.getDate();
   const todayKey = y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
+  const plan = getPlan();
   return (
     getCheckins().filter(function (item) {
-      return item.date === todayKey;
+      if (item.date !== todayKey) return false;
+      // 计划重算后旧计划的今日打卡不再作为「今日已打卡」依据
+      return !plan || !item.plan_id || item.plan_id === plan.plan_id;
     })[0] || null
   );
 }
@@ -175,18 +180,24 @@ function addFeedback(record) {
   return record;
 }
 
-function getFeedbackByWeek(weekNo) {
+function getFeedbackByWeek(weekNo, planId) {
   return (
     getFeedbacks().filter(function (item) {
-      return Number(item.week_no) === Number(weekNo);
+      if (Number(item.week_no) !== Number(weekNo)) return false;
+      if (planId && item.plan_id !== planId) return false;
+      return true;
     })[0] || null
   );
 }
 
-/** 按周移除反馈记录（更新反馈时先清理旧记录，保持同一周唯一） */
-function removeFeedbackByWeek(weekNo) {
+/** 按周移除反馈记录（更新反馈时先清理旧记录，保持同一周唯一）
+ * 传入 planId 时只清理该计划的记录，避免误删旧计划反馈。
+ */
+function removeFeedbackByWeek(weekNo, planId) {
   const list = getFeedbacks().filter(function (item) {
-    return Number(item.week_no) !== Number(weekNo);
+    if (Number(item.week_no) !== Number(weekNo)) return true;
+    if (planId && item.plan_id !== planId) return true;
+    return false;
   });
   write(KEYS.feedbacks, list);
   return list;

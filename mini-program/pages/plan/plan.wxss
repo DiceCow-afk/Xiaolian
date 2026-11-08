@@ -135,7 +135,7 @@
   color: var(--xl-brand-deep);
 }
 .week-tab-phase {
-  font-size: 20rpx;
+  font-size: 22rpx;
   font-weight: 600;
   line-height: 1.4;
 }
@@ -348,8 +348,45 @@
   color: var(--xl-brand);
   background: var(--xl-brand-soft);
 }
-.ex-body {
+/* 解释正文：滚动区 + 底部渐隐 + 「下滑查看完整解释」提示（避免长文被误认为截断） */
+.ex-body-wrap {
+  position: relative;
   margin-top: 24rpx;
+}
+.ex-body {
+  margin-top: 0;
+}
+/* 正文底部留白：滚到底时最后一行能完整露出，不被底部渐隐遮住 */
+.ex-body-inner {
+  padding-bottom: 96rpx;
+}
+.ex-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96rpx;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.72) 42%,
+    #ffffff 82%
+  );
+}
+.ex-scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 10rpx;
+  transform: translateX(-50%);
+  padding: 6rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  line-height: 1.5;
+  color: var(--xl-brand-deep);
+  background: var(--xl-brand-soft);
+  border: 1rpx solid var(--xl-brand-line);
+  white-space: nowrap;
 }
 .ex-line {
   min-height: 4rpx;

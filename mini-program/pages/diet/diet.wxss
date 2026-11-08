@@ -1,4 +1,4 @@
-﻿/* 饮食提示页（页面级样式，组件样式由各组件自带） */
+/* 饮食提示页（页面级样式，组件样式由各组件自带） */
 .page--diet {
   padding-bottom: 0;
 }
@@ -175,12 +175,13 @@
   gap: 12rpx;
 }
 .tip-num {
-  font-size: 24rpx;
-  font-weight: 600;
-  color: var(--xl-ink-2);
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--xl-ink);
   font-variant-numeric: tabular-nums;
 }
 .tip-num--target {
+  font-size: 24rpx;
   font-weight: 400;
   color: var(--xl-muted);
 }

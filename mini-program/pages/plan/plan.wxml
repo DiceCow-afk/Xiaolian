@@ -114,7 +114,7 @@
           bindcheckin="onCheckin"
         ></plan-card>
         <view wx:if="{{activeWeekData.session_count === 0}}" class="day-empty">
-          本周还没有训练日安排，下拉刷新试试
+          本周没有训练安排（体测日临近时，体测后的训练日已不再排布）
         </view>
 
         <!-- 安全拦截（无拦截时组件自身不渲染） -->
@@ -171,15 +171,28 @@
         <view class="ex-retry" bindtap="onRetryExplain">重试</view>
       </view>
 
-      <scroll-view wx:else scroll-y class="ex-body" style="max-height: 50vh;">
-        <view
-          wx:for="{{explainLines}}"
-          wx:key="key"
-          class="ex-line {{item.blank ? 'ex-line--blank' : ''}} {{item.heading ? 'ex-line--heading' : ''}}"
+      <view wx:else class="ex-body-wrap">
+        <scroll-view
+          scroll-y
+          class="ex-body"
+          style="max-height: 50vh;"
+          bindscroll="onExplainScroll"
+          bindscrolltolower="onExplainScrollLower"
         >
-          <text wx:if="{{!item.blank}}" class="ex-line-text">{{item.text}}</text>
-        </view>
-      </scroll-view>
+          <view class="ex-body-inner">
+            <view
+              wx:for="{{explainLines}}"
+              wx:key="key"
+              class="ex-line {{item.blank ? 'ex-line--blank' : ''}} {{item.heading ? 'ex-line--heading' : ''}}"
+            >
+              <text wx:if="{{!item.blank}}" class="ex-line-text">{{item.text}}</text>
+            </view>
+          </view>
+        </scroll-view>
+        <!-- 底部渐隐：提示正文还有内容，可继续滚动 -->
+        <view wx:if="{{!explainAtBottom}}" class="ex-fade"></view>
+        <view wx:if="{{!explainScrolled}}" class="ex-scroll-hint">↓ 下滑查看完整解释</view>
+      </view>
 
       <view class="ex-ft">
         <view class="btn btn-primary btn-block" bindtap="onCloseExplain">知道了</view>

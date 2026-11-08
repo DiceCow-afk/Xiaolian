@@ -391,6 +391,15 @@ function buildDiagnosis(profile) {
     .sort(function (a, b) {
       return b.contribution - a.contribution;
     });
+  // 逐项 round1 后权重和可能不等于 1，用第一项做残差修正，保证页面上权重合计严格为 100%
+  const roundedWeightSum = allocation.reduce(function (acc, item) {
+    return acc + item.weight;
+  }, 0);
+  if (allocation.length && Math.abs(1 - roundedWeightSum) > 0.0001) {
+    allocation[0] = Object.assign({}, allocation[0], {
+      weight: round1(allocation[0].weight + (1 - roundedWeightSum))
+    });
+  }
 
   const weakDimensions = allocation.slice(0, table.weak_dimension_top_n).map(function (item, index) {
     return Object.assign({}, item, { priority: index + 1 });
@@ -1130,7 +1139,7 @@ function handleExplainPlan(data) {
 /* ================= 打卡 ================= */
 
 /**
- * 同一训练日只保留最新一条打卡记录。
+ * 同一计划 + 训练日只保留最新一条打卡记录（计划重算后不同计划的同号训练日互不影响）。
  * 与后端「(user_id, plan_id, session_id) 唯一键 + upsert」保持一致，避免重复提交造成统计翻倍。
  */
 function latestCheckins(records) {
@@ -1138,8 +1147,9 @@ function latestCheckins(records) {
   const list = [];
   (records || []).forEach(function (record) {
     if (!record || !record.session_id) return;
-    if (seen[record.session_id]) return;
-    seen[record.session_id] = true;
+    const key = (record.plan_id || '') + '|' + record.session_id;
+    if (seen[key]) return;
+    seen[key] = true;
     list.push(record);
   });
   return list;
@@ -1202,7 +1212,8 @@ function computeWeekStats(plan, weekNo) {
   }
   const checkins = latestCheckins(store.getCheckins());
   const records = checkins.filter(function (c) {
-    return Number(c.week_no) === Number(week.week_no);
+    // 按 plan_id 隔离：计划重算后旧计划的打卡记录不污染新计划统计
+    return Number(c.week_no) === Number(week.week_no) && (!c.plan_id || c.plan_id === plan.plan_id);
   });
   let score = 0;
   week.sessions.forEach(function (session) {
@@ -1324,7 +1335,7 @@ function handleCheckin(data) {
 
 function computeWeekStatsAfterUpdate(plan, week) {
   const records = latestCheckins(store.getCheckins()).filter(function (c) {
-    return Number(c.week_no) === Number(week.week_no);
+    return Number(c.week_no) === Number(week.week_no) && (!c.plan_id || c.plan_id === plan.plan_id);
   });
   const recordMap = {};
   records.forEach(function (r) {
@@ -1609,7 +1620,7 @@ function handleGetWeeklyFeedback(params) {
   const weekNo = query.week_no
     ? Number(query.week_no)
     : (findWeekOfPlan(plan, util.todayStr()) || {}).week_no || 1;
-  const record = store.getFeedbackByWeek(weekNo);
+  const record = store.getFeedbackByWeek(weekNo, plan.plan_id);
   const stats = computeWeekStats(plan, weekNo);
   const week = plan.weeks.filter(function (w) {
     return w.week_no === weekNo;
@@ -1617,7 +1628,10 @@ function handleGetWeeklyFeedback(params) {
   return ok({
     record: record,
     stats: stats,
-    history: store.getFeedbacks(),
+    // 历史调整记录按当前计划过滤，避免计划重算后展示旧计划的反馈
+    history: store.getFeedbacks().filter(function (f) {
+      return !f.plan_id || f.plan_id === plan.plan_id;
+    }),
     plan_summary: {
       plan_id: plan.plan_id,
       test_date: plan.test_date,
@@ -1668,10 +1682,10 @@ function handleSubmitWeeklyFeedback(data) {
   const check = validators.validateWeeklyFeedback(payload);
   if (!check.valid) return fail(1001, check.firstError, { errors: check.errors });
 
-  const existing = store.getFeedbackByWeek(payload.week_no);
+  const existing = store.getFeedbackByWeek(payload.week_no, plan.plan_id);
   if (existing) {
-    // 重复提交视为更新：先移除旧记录（同一周只保留一条反馈）
-    store.removeFeedbackByWeek(payload.week_no);
+    // 重复提交视为更新：先移除该计划同一周的旧记录（不同计划的反馈互不影响）
+    store.removeFeedbackByWeek(payload.week_no, plan.plan_id);
   }
 
   const profile = store.getProfile() || plan.meta.profile_snapshot;
@@ -1719,7 +1733,9 @@ function handleSubmitWeeklyFeedback(data) {
       record: record,
       adjustment: adjustment,
       next_week: preview.available ? preview : { available: false, message: preview.message },
-      history: store.getFeedbacks(),
+      history: store.getFeedbacks().filter(function (f) {
+        return !f.plan_id || f.plan_id === plan.plan_id;
+      }),
       plan_id: plan.plan_id
     },
     '周反馈已提交，下一周计划已调整'

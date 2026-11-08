@@ -432,7 +432,8 @@ Page({
 
   onUpdateFeedback() {
     this.setData({ formOpen: true }, () => {
-      setTimeout(function () {
+      this.clearScrollTimer();
+      this._scrollTimer = setTimeout(function () {
         wx.pageScrollTo({
           selector: '#feedback-form',
           duration: 280,
@@ -445,6 +446,22 @@ Page({
   onCancelUpdate() {
     if (!this.data.record) return;
     this.setData({ formOpen: false });
+  },
+
+  onHide() {
+    this.clearScrollTimer();
+  },
+
+  onUnload() {
+    this.clearScrollTimer();
+  },
+
+  /** 清理滚动定时器（页面定时器需在 onHide/onUnload 清理） */
+  clearScrollTimer() {
+    if (this._scrollTimer) {
+      clearTimeout(this._scrollTimer);
+      this._scrollTimer = null;
+    }
   },
 
   /* ================= 提交反馈 ================= */
@@ -542,7 +559,8 @@ Page({
           ' · 已反馈'
       },
       () => {
-        setTimeout(function () {
+        this.clearScrollTimer();
+        this._scrollTimer = setTimeout(function () {
           wx.pageScrollTo({
             selector: '#result-card',
             duration: 280,

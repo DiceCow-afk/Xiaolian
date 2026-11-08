@@ -115,11 +115,11 @@ function validateProfile(profile) {
 
   if (!p.test_date) {
     errors.test_date = '请选择体测日期（用于排布周期化计划）';
+  } else if (isNaN(new Date(p.test_date).getTime())) {
+    errors.test_date = '体测日期格式不正确（应为 YYYY-MM-DD）';
   } else {
     const days = util.diffDays(util.todayStr(), p.test_date);
-    if (isNaN(days)) {
-      errors.test_date = '体测日期格式不正确';
-    } else if (days < 7) {
+    if (days < 7) {
       errors.test_date = '体测日期至少距今天 7 天，否则无法安排周期化计划';
     } else if (days > 180) {
       errors.test_date = '体测日期过远（超过 180 天），请确认后重新选择';

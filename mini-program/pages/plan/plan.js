@@ -71,7 +71,10 @@ Page({
     explainError: '',
     explainLines: [],
     explainModel: '',
-    explainFromCache: false
+    explainFromCache: false,
+    /* 解释正文滚动状态：未滚动时给「下滑查看完整解释」提示，滚到底后隐藏底部渐隐 */
+    explainScrolled: false,
+    explainAtBottom: false
   },
 
   onLoad() {
@@ -380,11 +383,18 @@ Page({
         explainError: '',
         explainFromCache: true,
         explainModel: cached.model || '',
+        explainScrolled: false,
+        explainAtBottom: false,
         explainLines: buildExplainLines(cached.text)
       });
       return;
     }
-    this.setData({ explainVisible: true, explainFromCache: false });
+    this.setData({
+      explainVisible: true,
+      explainFromCache: false,
+      explainScrolled: false,
+      explainAtBottom: false
+    });
     this.requestExplain();
   },
 
@@ -392,7 +402,13 @@ Page({
     const plan = this.data.plan;
     if (!plan) return;
     const self = this;
-    this.setData({ explainLoading: true, explainError: '', explainLines: [] });
+    this.setData({
+      explainLoading: true,
+      explainError: '',
+      explainLines: [],
+      explainScrolled: false,
+      explainAtBottom: false
+    });
     api
       .explainPlan(plan.plan_id)
       .then(function (res) {
@@ -412,6 +428,23 @@ Page({
             code === 1003 ? '计划已更新，请关闭后刷新页面再试' : '暂时无法生成解释，不影响训练'
         });
       });
+  },
+
+  /** 解释正文滚动：已开始滚动则收起「下滑查看完整解释」提示 */
+  onExplainScroll(e) {
+    const detail = (e && e.detail) || {};
+    const scrollTop = Number(detail.scrollTop) || 0;
+    const scrolled = scrollTop > 24;
+    if (scrolled !== this.data.explainScrolled) {
+      this.setData({ explainScrolled: scrolled });
+    }
+  },
+
+  /** 解释正文滚到底：隐藏底部渐隐，避免误以为还有内容 */
+  onExplainScrollLower() {
+    if (!this.data.explainAtBottom) {
+      this.setData({ explainAtBottom: true });
+    }
   },
 
   onRetryExplain() {

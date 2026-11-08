@@ -1,4 +1,4 @@
-<view class="page page--action">
+﻿<view class="page page--action">
   <!-- 深色 Hero：导航栏同为 #172033 -->
   <view class="hero hero-dark hero--action">
     <view class="hero-deco hero-deco-1"></view>
@@ -201,7 +201,7 @@
               icon="🔁"
               title="暂无替代动作"
               desc="该动作暂未配置降阶/进阶动作，按当前组次完成即可"
-              action-text="返回计划"
+              action-text="返回"
               bindaction="onBack"
             ></empty-state>
           </view>
@@ -211,16 +211,16 @@
       </block>
     </state-view>
 
-    <!-- 错误态出口：返回计划 -->
+    <!-- 错误态出口：返回上一页（无上一页时兜底回计划页） -->
     <view wx:if="{{viewState === 'error'}}" class="error-back">
-      <view class="btn btn-ghost btn-block" bindtap="onBack">返回计划</view>
+      <view class="btn btn-ghost btn-block" bindtap="onBack">返回</view>
     </view>
   </view>
 
   <!-- 底部吸底操作栏 -->
   <view wx:if="{{viewState === 'done' && action}}" class="bottom-bar">
     <view class="btn-row">
-      <view class="btn btn-ghost" bindtap="onBack">返回计划</view>
+      <view class="btn btn-ghost" bindtap="onBack">返回</view>
       <view class="btn btn-primary" bindtap="onGoCheckin">去打卡</view>
     </view>
   </view>

@@ -375,6 +375,8 @@ async function checkConstraintsPage() {
     check('空表单校验包含字段错误：' + field, !!emptyValidation.errors[field], emptyValidation.errors);
   });
   check('firstError 是首条内联错误文案', !!emptyValidation.firstError, emptyValidation.firstError);
+  const badDateCheck = validators.validateProfile(profileOf({ test_date: 'not-a-date' }));
+  check('非法体测日期格式提示「格式不正确」（OBS-08 回归）', badDateCheck.valid === false && badDateCheck.errors.test_date.indexOf('格式不正确') >= 0, badDateCheck.errors.test_date);
 
   // 自然语言解析（LLM 调用点 1）
   const parseText = '每周三次，每次 30 分钟，宿舍里只有弹力带，膝盖有点不舒服，想提升 1000 米和立定跳远成绩';
@@ -412,7 +414,7 @@ async function checkConstraintsPage() {
   check('诊断包含弱项维度（1-3 个）', diagnosis.weak_dimensions.length >= 1 && diagnosis.weak_dimensions.length <= 3, diagnosis.weak_dimensions.length);
   check('弱项带 priority 排序', diagnosis.weak_dimensions.every(function (d, i) { return d.priority === i + 1; }), diagnosis.weak_dimensions.map(function (d) { return d.priority; }));
   const allocationSum = diagnosis.allocation.reduce(function (acc, d) { return acc + d.weight; }, 0);
-  check('训练资源权重已归一化（误差 ≤0.2）', Math.abs(allocationSum - 1) <= 0.2, allocationSum);
+  check('训练资源权重合计严格为 1（round 残差已修正）', Math.abs(allocationSum - 1) < 1e-9, allocationSum);
   check('诊断 summary 可解释（含提分建议）', typeof diagnosis.summary === 'string' && diagnosis.summary.indexOf('提分') >= 0, diagnosis.summary);
   check('诊断条目含当前分数/下一档/贡献', diagnosis.items.every(function (item) {
     return typeof item.current_score === 'number' && item.next_tier !== undefined && typeof item.contribution === 'number';
@@ -703,7 +705,7 @@ async function checkCheckinPage() {
   });
   check('打卡成功返回 record/stats/safety_review', !!checkinRes.record && !!checkinRes.stats && !!checkinRes.safety_review);
   check('打卡记录字段完整（历史卡展示）', checkinRes.record.session_id === todaySession.session_id && checkinRes.record.status === 'done' && checkinRes.record.rpe === 6 && !!checkinRes.record.title);
-  check('本周统计更新：done_count=1 / completion_rate=0.3', checkinRes.stats.done_count === 1 && checkinRes.stats.completion_rate === 0.3, checkinRes.stats);
+  check('本周统计更新：done_count=1 / completion_rate=0.33（两位小数口径）', checkinRes.stats.done_count === 1 && checkinRes.stats.completion_rate === 0.33, checkinRes.stats);
   check('无不适时不触发安全复查', checkinRes.safety_review.triggered === false, checkinRes.safety_review);
   check('打卡后 streak=1', checkinRes.stats.streak === 1, checkinRes.stats.streak);
   const planAfterCheckin = (await api.getCurrentPlan()).plan;
@@ -743,7 +745,7 @@ async function checkCheckinPage() {
   check('不适打卡触发安全复查', discomfortRes.safety_review.triggered === true, discomfortRes.safety_review);
   check('安全复查带中文限制标签与提示文案', (discomfortRes.safety_review.limit_labels || []).indexOf('膝盖不适') >= 0 && !!discomfortRes.safety_review.message, discomfortRes.safety_review);
   check('本周不适次数统计 discomfort_count=1', discomfortRes.stats.discomfort_count === 1, discomfortRes.stats.discomfort_count);
-  check('部分完成按 0.5 计入完成率（2 次 partial → 0.3）', discomfortRes.stats.completion_rate === 0.3 && discomfortRes.stats.partial_count === 2, discomfortRes.stats);
+  check('部分完成按 0.5 计入完成率（2 次 partial → 0.33）', discomfortRes.stats.completion_rate === 0.33 && discomfortRes.stats.partial_count === 2, discomfortRes.stats);
 
   // 跳过训练
   const thirdSession = plan.weeks[0].sessions[2];
@@ -756,7 +758,7 @@ async function checkCheckinPage() {
     discomfort: ['none']
   });
   check('跳过训练记录 skipped_count=1', skippedRes.stats.skipped_count === 1, skippedRes.stats);
-  check('跳过不影响完成率', skippedRes.stats.completion_rate === 0.3, skippedRes.stats.completion_rate);
+  check('跳过不影响完成率（仍为 0.33）', skippedRes.stats.completion_rate === 0.33, skippedRes.stats.completion_rate);
   check('打卡历史返回全部记录（页面截取最近 10 条）', (await api.getCheckins()).total === 3, (await api.getCheckins()).total);
 
   // 错误码
@@ -1144,6 +1146,89 @@ async function checkErrorMatrix() {
   return fx;
 }
 
+async function checkReplanIsolation() {
+  section('11. 计划重算后的数据隔离（回归锚点）');
+  resetConfig();
+  store.clearAll();
+
+  const p1 = profileOf();
+  await api.submitProfile(p1);
+  const diag1 = await api.getDiagnosis(p1);
+  const plan1 = (await api.generatePlan({ profile: p1, diagnosis: diag1 })).plan;
+  const t1 = todaySessionOf(plan1).session;
+  await api.checkin({
+    plan_id: plan1.plan_id,
+    session_id: t1.session_id,
+    date: t1.date,
+    status: 'done',
+    rpe: 6,
+    discomfort: ['none']
+  });
+  await api.submitWeeklyFeedback({
+    plan_id: plan1.plan_id,
+    week_no: 1,
+    completion_rate: 0.5,
+    avg_rpe: 7.5,
+    feel: 'ok',
+    recovery: 3,
+    has_discomfort: true
+  });
+  check('重算前：打卡与周反馈已落库', store.getCheckins().length === 1 && store.getFeedbacks().length === 1, {
+    checkins: store.getCheckins().length,
+    feedbacks: store.getFeedbacks().length
+  });
+
+  // 用户改约束并重算计划（等价计划页「重算计划」/ 约束页编辑模式）
+  const p2 = profileOf({ time_per_session: 45 });
+  const saved2 = await api.submitProfile(p2);
+  check('修改约束 needs_replan=true', saved2.needs_replan === true, saved2.needs_replan);
+  const diag2 = await api.getDiagnosis(p2);
+  const plan2 = (await api.generatePlan({ profile: p2, diagnosis: diag2 })).plan;
+  check('重算生成新计划（plan_id 不同）', plan2.plan_id !== plan1.plan_id, { old: plan1.plan_id, next: plan2.plan_id });
+
+  const ck = await api.getCheckins();
+  check(
+    '重算后：新计划本周打卡统计不被旧记录污染（done=0 / rate=0）',
+    ck.stats.total_sessions === 3 && ck.stats.done_count === 0 && ck.stats.completion_rate === 0 && ck.stats.records.length === 0,
+    ck.stats
+  );
+  check('重算后：历史列表仍保留旧打卡记录（数据不丢）', ck.records.length === 1, ck.records.length);
+  const todayAfter = (await api.getCurrentPlan()).plan.weeks[0].sessions.filter(function (s) {
+    return s.date === util.todayStr();
+  })[0];
+  check('重算后：新计划今日训练日仍为 pending（不继承旧打卡状态）', todayAfter && todayAfter.status === 'pending', todayAfter && todayAfter.status);
+
+  const fb = await api.getWeeklyFeedback({ week_no: 1 });
+  check('重算后：旧周反馈不再返回（record=null，避免展示旧调整结果卡）', fb.record === null && fb.history.length === 0, {
+    record: !!fb.record,
+    history: fb.history.length
+  });
+  check('重算后：plan_summary 指向新计划', fb.plan_summary && fb.plan_summary.plan_id === plan2.plan_id, fb.plan_summary && fb.plan_summary.plan_id);
+  check('重算后：新计划第 2 周未被旧反馈调整（is_preview 未置位）', !plan2.weeks[1].is_preview, plan2.weeks[1].is_preview);
+
+  // 重算后、新计划尚未打卡时：今日打卡回显应为空（tab 角标依据）
+  const todayBeforeNewCheckin = store.getTodayCheckin();
+  check('重算后：store.getTodayCheckin 不返回旧计划记录（tab 角标依据）', todayBeforeNewCheckin === null, todayBeforeNewCheckin && todayBeforeNewCheckin.status);
+
+  // 重算后新计划首次打卡应正常（0 → 1/3），且旧计划历史记录不被覆盖
+  const prevHistoryCount = store.getCheckins().length;
+  const newCheckin = await api.checkin({
+    plan_id: plan2.plan_id,
+    session_id: todayAfter.session_id,
+    date: todayAfter.date,
+    status: 'done',
+    rpe: 6,
+    discomfort: ['none']
+  });
+  check('重算后：新计划首次打卡正常（本周 done=1/3）', newCheckin.stats.done_count === 1 && newCheckin.stats.total_sessions === 3 && newCheckin.stats.completion_rate === 0.33, newCheckin.stats);
+  check('重算后：新打卡保留旧计划历史记录（upsert 按 plan_id+session_id 隔离）', store.getCheckins().length === prevHistoryCount + 1, {
+    before: prevHistoryCount,
+    after: store.getCheckins().length
+  });
+  const todayAfterNew = store.getTodayCheckin();
+  check('重算后：新计划打卡后 getTodayCheckin 返回新计划记录', todayAfterNew && todayAfterNew.plan_id === plan2.plan_id, todayAfterNew && todayAfterNew.plan_id);
+}
+
 /* ============================== 6. 主流程 ============================== */
 
 (async function main() {
@@ -1164,6 +1249,7 @@ async function checkErrorMatrix() {
   await checkReminderAndSubscription();
   await checkSafetyInvariants();
   await checkErrorMatrix();
+  await checkReplanIsolation();
 
   resetConfig();
   store.clearAll();

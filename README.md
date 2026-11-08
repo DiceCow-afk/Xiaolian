@@ -12,7 +12,7 @@
 | 后端 | Python 3.11 + FastAPI + SQLite/MySQL（本次交付前端 + mock 数据层，接口契约已冻结） |
 | AppID | `wx9c4aac9029c3e66e` |
 | 数据 | 动作库 35 个动作 / 6 个体测项目 / 7 个能力维度 / 表驱动规则库 / 食堂食物简表 |
-| 文档 | [前端实现规范](docs/01-前端/前端实现规范.md) · [接口契约](docs/02-接口/接口契约.md) · [会话总结](会话总结_校练项目.md) · [功能与技术框架](项目功能与技术框架.md) |
+| 文档 | [前端实现规范](docs/01-前端/前端实现规范.md) · [接口契约](docs/02-接口/接口契约.md) · [QA 终检报告](docs/03-测试/QA终检报告.md) · [QA 基线报告](docs/03-测试/QA基线报告.md) · [UI 近似预览](docs/03-测试/UI预览/overview.png) · [会话总结](会话总结_校练项目.md) · [功能与技术框架](项目功能与技术框架.md) |
 
 ---
 
@@ -24,7 +24,8 @@
 - ✅ 表驱动规则：约束过滤（器械/空间/身体限制/能力门槛四类硬过滤）、分数贡献、周期排布、周反馈四类调整分支、安全拦截、饮食提示
 - ✅ 数据资产：35 个动作库（含降阶/升阶/禁忌/组次/教学要点）、6 个体测项目评分档位、食物简表
 - ✅ 视觉素材：tabBar 图标、6 个核心动作各 4 帧关键帧示范、占位图、分享封面
-- ✅ 自测：`tools/smoke_test.js` 覆盖 mock 全流程 67 项断言；`tools/validate-miniprogram.js` 静态校验；`tools/simulate.js` 页面级闭环模拟
+- ✅ 自测与验收：`tools/smoke_test.js` 67 项、`tools/simulate.js` 339 项、`tools/page_harness.js` 58 项、`tools/validate-miniprogram.js` 456 项静态校验 —— **全绿**；QA 终检结论：**P1=0 / P2=0，可进入演示/答辩交付**（详见 [QA 终检报告](docs/03-测试/QA终检报告.md)）
+- ✅ UI 近似预览：无微信开发者工具环境下的 14 个页面场景近似渲染截图（[overview.png](docs/03-测试/UI预览/overview.png)，由 `tools/ui_preview/render.js` 可复跑）
 - ⏳ 待办：后端 FastAPI 实现与联调、真机测试、订阅消息模板申请、示范视频素材、30-50 人可用性测试
 
 ## 2. 快速开始（微信开发者工具）
@@ -44,6 +45,12 @@
 6. **饮食提示页**：选今天吃的食物 → 看蛋白质/碳水两个维度的提示（一般性参考，非营养处方）
 
 > 演示第二天打开时，计划日期可能“过期”（mock 以生成日为第 1 周起点），计划页会提示并支持「重新生成计划」。
+
+### UI 近似预览（无开发者工具环境也可先看效果）
+
+![校练 UI 预览总览](docs/03-测试/UI预览/overview.png)
+
+> 说明：该图由 `tools/ui_preview/render.js` 用「WXML/WXSS 近似渲染 + headless 浏览器」生成，**不是真机截图**，用于布局自检与交付预览；真机/开发者工具下字体、原生控件、safe-area 会有差异（详见 [UI 预览说明](docs/03-测试/UI预览/README.md)）。逐页截图见 `docs/03-测试/UI预览/`。
 
 ## 3. 目录结构
 
@@ -67,12 +74,14 @@ Xiaolian/
 ├── docs/
 │   ├── 01-前端/前端实现规范.md      # 设计系统、组件 API、数据契约、页面规格、验收清单
 │   ├── 02-接口/接口契约.md          # 前后端接口契约（Schema v1.0）
-│   └── 03-测试/                    # QA 基线报告 / 终检报告
+│   └── 03-测试/                    # QA 基线报告 / 终检报告 / UI 近似预览截图
 ├── tools/
 │   ├── generate_assets.py          # 一键重建全部视觉素材（Pillow）
-│   ├── smoke_test.js               # mock 全流程无头自测
-│   ├── simulate.js                 # 页面级闭环模拟（QA 维护）
-│   └── validate-miniprogram.js     # 小程序静态校验（QA 维护）
+│   ├── smoke_test.js               # mock 全流程无头自测（67 项）
+│   ├── simulate.js                 # 页面级闭环模拟（QA 维护，339 项）
+│   ├── page_harness.js             # 6 页面真实 require + stub wx 生命周期/交互冒烟（58 项）
+│   ├── validate-miniprogram.js     # 小程序静态校验（QA 维护，456 项）
+│   └── ui_preview/                 # UI 近似渲染预览工具（WXML/WXSS → headless 截图）
 ├── .gitignore
 └── README.md
 ```
@@ -118,11 +127,15 @@ Xiaolian/
 ```bash
 # 环境：Node 24（或微信开发者工具自带 Node），Python 3.11 + Pillow（仅素材脚本）
 node tools/smoke_test.js            # mock 全流程：67 项断言
-node tools/simulate.js              # 页面级闭环模拟：325 断言（QA 维护）
-node tools/validate-miniprogram.js  # 静态校验：445 项（JSON/WXML 事件绑定/组件路径/资源/禁用依赖）
-node tools/page_harness.js          # 6 个页面真实 require + stub wx 生命周期/交互冒烟：58 断言
+node tools/simulate.js              # 页面级闭环模拟：339 项断言（QA 维护）
+node tools/validate-miniprogram.js  # 静态校验：456 项（JSON/WXML 事件绑定/组件路径/资源/禁用依赖）
+node tools/page_harness.js          # 6 个页面真实 require + stub wx 生命周期/交互冒烟：58 项
+node tools/ui_preview/render.js     # UI 近似渲染预览（输出 docs/03-测试/UI预览/，需本机 Edge/Chrome）
 python tools/generate_assets.py     # 一键重建视觉素材（可选）
 ```
+
+> 验收口径与演示前真机检查清单见 [QA 终检报告](docs/03-测试/QA终检报告.md) 第 9 节；设计规范见 [前端实现规范](docs/01-前端/前端实现规范.md)。
+> 环境未安装微信开发者工具时，`validate` / `simulate` / `page_harness` / `ui_preview` 可作为静态 + 逻辑 + 近似视觉的三重兜底。
 
 > 静态校验无法替代真机：上线前需在 iOS / Android 各 1 台真机跑通「表单、计划卡、示范播放、打卡、订阅消息」。
 > 设计规范与验收清单见 [前端实现规范](docs/01-前端/前端实现规范.md)。

@@ -1,0 +1,222 @@
+{
+  "generatedAt": "2026-11-08T08:27:59.389Z",
+  "viewport": {
+    "width": 375,
+    "height": 812,
+    "dpr": 2
+  },
+  "checks": {
+    "page-constraints-form": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": {
+        "top": 749,
+        "bottom": 812,
+        "viewportBottom": 812
+      },
+      "tabBarVisible": false,
+      "pageHeight": 2269,
+      "viewportHeight": 724,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": true,
+      "scrollTop": 0
+    },
+    "page-constraints-parsed": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": {
+        "top": 749,
+        "bottom": 812,
+        "viewportBottom": 812
+      },
+      "tabBarVisible": false,
+      "pageHeight": 2671,
+      "viewportHeight": 724,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": true,
+      "scrollTop": 0
+    },
+    "page-plan-4weeks": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 2332,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 0
+    },
+    "page-plan-empty": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 812,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 0
+    },
+    "page-plan-stale": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 2486,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 0
+    },
+    "page-plan-explain": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 2332,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 0
+    },
+    "page-plan-explain-bottom": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 2332,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 0
+    },
+    "page-action-frames": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": {
+        "top": 747,
+        "bottom": 812,
+        "viewportBottom": 812
+      },
+      "tabBarVisible": false,
+      "pageHeight": 1445,
+      "viewportHeight": 724,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": true,
+      "scrollTop": 0
+    },
+    "page-action-text": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": {
+        "top": 747,
+        "bottom": 812,
+        "viewportBottom": 812
+      },
+      "tabBarVisible": false,
+      "pageHeight": 1249,
+      "viewportHeight": 724,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": true,
+      "scrollTop": 0
+    },
+    "page-checkin-today": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 2116,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 684
+    },
+    "page-checkin-checked": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 2320,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 1679
+    },
+    "page-feedback-form": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 1674,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 0
+    },
+    "page-feedback-result": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 2273,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 537
+    },
+    "page-diet-tips": {
+      "overflowX": [],
+      "clippedText": [],
+      "brokenImages": [],
+      "undefinedText": false,
+      "heroContentOverlap": 24,
+      "bottomBar": null,
+      "tabBarVisible": true,
+      "pageHeight": 1959,
+      "viewportHeight": 641,
+      "overflowCount": 0,
+      "hasBottomPlaceholder": false,
+      "scrollTop": 1284
+    }
+  }
+}

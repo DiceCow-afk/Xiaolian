@@ -8,6 +8,8 @@
  * - 清理：定时器在 onHide / onUnload 清理；图片 binderror 逐级降级到 placeholder / 文本占位
  */
 const api = require('../../utils/api');
+const store = require('../../utils/store');
+const options = require('../../data/options');
 
 /** 图片一级兜底：图文要点占位图 */
 const PLACEHOLDER = '/assets/demo/placeholder.png';
@@ -212,6 +214,20 @@ Page({
 
     const equipmentText = equipmentLabels.length ? equipmentLabels.join('、') : '徒手';
     const spaceText = spaceLabels.length ? spaceLabels.join(' / ') : '不限';
+
+    // hero 只放 1 个代表空间（优先当前画像空间，动作不支持时退回动作首个空间），
+    // 完整兼容空间列表放到下方「动作信息」卡，避免 hero 元信息过长把「组次」挤换行
+    const profile = store.getProfile();
+    const profileSpaceKey = profile && profile.space ? profile.space : '';
+    let profileSpaceLabel = '';
+    (options.SPACE_OPTIONS || []).forEach(function (item) {
+      if (item.value === profileSpaceKey) profileSpaceLabel = item.label;
+    });
+    const profileSpaceIndex = profileSpaceLabel ? spaceLabels.indexOf(profileSpaceLabel) : -1;
+    const heroSpaceLabel =
+      profileSpaceIndex >= 0 ? spaceLabels[profileSpaceIndex] : spaceLabels[0] || '不限';
+    const heroSpaceText = spaceLabels.length > 1 ? heroSpaceLabel + ' 等多场景' : heroSpaceLabel;
+
     const infoRows = [
       { label: '可用器械', value: equipmentText },
       { label: '适合空间', value: spaceText },
@@ -229,7 +245,7 @@ Page({
         heroSub: dimensionText ? '主要能力：' + dimensionText : '按要点与呼吸提示完成动作',
         heroMeta: [
           { label: '器械', value: equipmentText },
-          { label: '空间', value: spaceText },
+          { label: '空间', value: heroSpaceText },
           { label: '组次', value: setsText }
         ],
         demoType: demoType,

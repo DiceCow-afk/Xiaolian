@@ -126,6 +126,22 @@ Page({
     }
   },
 
+  onHide() {
+    this.clearScrollTimer();
+  },
+
+  onUnload() {
+    this.clearScrollTimer();
+  },
+
+  /** 清理滚动定时器（页面定时器需在 onHide/onUnload 清理） */
+  clearScrollTimer() {
+    if (this._scrollTimer) {
+      clearTimeout(this._scrollTimer);
+      this._scrollTimer = null;
+    }
+  },
+
   onPullDownRefresh() {
     this.loadData(true).then(() => {
       wx.stopPullDownRefresh();
@@ -179,7 +195,13 @@ Page({
   /** 把计划与打卡数据落到页面（首次加载与静默刷新共用） */
   applyData(planRes, ckRes, quiet) {
     const plan = planRes.plan;
-    const records = ckRes.records || [];
+    const allRecords = ckRes.records || [];
+    // 计划重算后，旧计划的打卡记录不再计入本计划（mock/服务端均按 plan_id 隔离）
+    const records = plan
+      ? allRecords.filter(function (r) {
+          return !r.plan_id || r.plan_id === plan.plan_id;
+        })
+      : allRecords;
     const stats = ckRes.stats || null;
     const streak = Number(ckRes.streak) || 0;
     const reminderStatus = reminder.getReminderStatus();
@@ -403,7 +425,8 @@ Page({
   },
 
   scrollTo(selector) {
-    setTimeout(function () {
+    this.clearScrollTimer();
+    this._scrollTimer = setTimeout(function () {
       wx.pageScrollTo({
         selector: selector,
         duration: 280,
