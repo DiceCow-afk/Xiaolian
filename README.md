@@ -30,8 +30,15 @@
 
 ## 2. 快速开始（微信开发者工具）
 
-1. 打开**微信开发者工具**（已登录、AppID 为 `wx9c4aac9029c3e66e`）。
-2. 「导入项目」→ 目录选择本仓库下的 **`mini-program/`**（注意：不是仓库根目录）→ AppID 会自动读取 `project.config.json`。
+两种导入方式任选其一：
+
+- **方式 A（推荐）**：「导入项目」→ 目录选择本仓库下的 **`mini-program/`** → AppID 自动读取；
+- **方式 B**：直接导入**仓库根目录**（`Xiaolian/`）→ 根目录的 `project.config.json` 已通过 `"miniprogramRoot": "mini-program/"` 指向小程序代码，同样可编译。
+
+> 常见报错：「模拟器启动失败：Error: app.json: 在项目根目录未找到 app.json」
+> 原因：导入了仓库根目录，但当时根目录还没有项目配置（或导入到了仓库的上级目录）。
+> 处理：① 重新导入 `mini-program/`（最稳）；或 ② 拉到最新代码后重新导入仓库根目录（已内置 `miniprogramRoot`）；或 ③ 关闭项目后删除根目录/`mini-program` 下的 `project.private.config.json` 本地缓存，再重新导入/编译。
+
 3. 编译即可运行，**无需后端、无需网络**（默认 `useMock: true`）。
 4. 若提示「不校验合法域名」，保持 `project.config.json` 中 `urlCheck: false` 即可（mock 模式无网络请求）。
 
@@ -56,9 +63,10 @@
 
 ```
 Xiaolian/
-├── mini-program/                  # 小程序工程（用开发者工具导入这一层）
+├── project.config.json             # 仓库根目录项目配置：miniprogramRoot 指向 mini-program/
+├── mini-program/                  # 小程序工程（推荐用开发者工具导入这一层）
 │   ├── app.js / app.json / app.wxss
-│   ├── project.config.json        # AppID / 编译配置（project.private.config.json 不入库）
+│   ├── project.config.json        # 直接导入 mini-program/ 时使用的项目配置（AppID）
 │   ├── sitemap.json
 │   ├── pages/
 │   │   ├── constraints/           # 约束输入（入口页）

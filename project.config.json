@@ -1,0 +1,40 @@
+{
+  "description": "校练——面向校园约束场景的大学生体测训练计划小程序（仓库根目录配置：小程序代码在 mini-program/）",
+  "appid": "wx9c4aac9029c3e66e",
+  "projectname": "xiaolian",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "mini-program/",
+  "srcMiniprogramRoot": "mini-program/",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "packNpmManually": false,
+    "useCompilerPlugins": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "docs"
+      },
+      {
+        "type": "folder",
+        "value": "tools"
+      }
+    ],
+    "include": []
+  },
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
+}
