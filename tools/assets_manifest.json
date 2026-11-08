@@ -1,0 +1,437 @@
+{
+  "project": "校练 Xiaolian 微信小程序",
+  "generatedBy": "Xiaolian/tools/generate_assets.py",
+  "runCommand": "C:/Users/LENOVO/.dsh/dsh-runtimes/dsh-primary-runtime/dependencies/python/python.exe D:/dsh--workplace/Xiaolian/tools/generate_assets.py",
+  "designTokens": {
+    "primary": "#FF6B2C",
+    "ink": "#172033",
+    "gray": "#8A94A6",
+    "green": "#12B76A",
+    "blue": "#2F5BEA",
+    "background": "#F4F6FA"
+  },
+  "summary": {
+    "pngFiles": 35,
+    "tabBarIcons": 8,
+    "demoActions": 6,
+    "demoFrames": 24,
+    "placeholder": 1,
+    "shareCovers": 1,
+    "preview": 1,
+    "totalPngBytes": 1196549,
+    "totalPngKB": 1168.5,
+    "limitBytes": 2097152,
+    "withinLimit": true
+  },
+  "tabBar": {
+    "plan": {
+      "text": "计划",
+      "iconPath": "assets/icons/tab-plan.png",
+      "selectedIconPath": "assets/icons/tab-plan-active.png"
+    },
+    "checkin": {
+      "text": "打卡",
+      "iconPath": "assets/icons/tab-checkin.png",
+      "selectedIconPath": "assets/icons/tab-checkin-active.png"
+    },
+    "feedback": {
+      "text": "反馈",
+      "iconPath": "assets/icons/tab-feedback.png",
+      "selectedIconPath": "assets/icons/tab-feedback-active.png"
+    },
+    "diet": {
+      "text": "饮食",
+      "iconPath": "assets/icons/tab-diet.png",
+      "selectedIconPath": "assets/icons/tab-diet-active.png"
+    }
+  },
+  "demo": {
+    "squat": {
+      "name": "深蹲",
+      "nameEn": "Squat",
+      "frames": 4,
+      "files": [
+        "assets/demo/squat/frame-1.png",
+        "assets/demo/squat/frame-2.png",
+        "assets/demo/squat/frame-3.png",
+        "assets/demo/squat/frame-4.png"
+      ]
+    },
+    "plank": {
+      "name": "平板支撑",
+      "nameEn": "Plank",
+      "frames": 4,
+      "files": [
+        "assets/demo/plank/frame-1.png",
+        "assets/demo/plank/frame-2.png",
+        "assets/demo/plank/frame-3.png",
+        "assets/demo/plank/frame-4.png"
+      ]
+    },
+    "glute_bridge": {
+      "name": "臀桥",
+      "nameEn": "Glute Bridge",
+      "frames": 4,
+      "files": [
+        "assets/demo/glute_bridge/frame-1.png",
+        "assets/demo/glute_bridge/frame-2.png",
+        "assets/demo/glute_bridge/frame-3.png",
+        "assets/demo/glute_bridge/frame-4.png"
+      ]
+    },
+    "high_knees": {
+      "name": "高抬腿",
+      "nameEn": "High Knees",
+      "frames": 4,
+      "files": [
+        "assets/demo/high_knees/frame-1.png",
+        "assets/demo/high_knees/frame-2.png",
+        "assets/demo/high_knees/frame-3.png",
+        "assets/demo/high_knees/frame-4.png"
+      ]
+    },
+    "jumping_jack": {
+      "name": "开合跳",
+      "nameEn": "Jumping Jack",
+      "frames": 4,
+      "files": [
+        "assets/demo/jumping_jack/frame-1.png",
+        "assets/demo/jumping_jack/frame-2.png",
+        "assets/demo/jumping_jack/frame-3.png",
+        "assets/demo/jumping_jack/frame-4.png"
+      ]
+    },
+    "wall_sit": {
+      "name": "靠墙静蹲",
+      "nameEn": "Wall Sit",
+      "frames": 4,
+      "files": [
+        "assets/demo/wall_sit/frame-1.png",
+        "assets/demo/wall_sit/frame-2.png",
+        "assets/demo/wall_sit/frame-3.png",
+        "assets/demo/wall_sit/frame-4.png"
+      ]
+    }
+  },
+  "other": {
+    "placeholder": "assets/demo/placeholder.png",
+    "shareCover": "assets/images/share-cover.png"
+  },
+  "files": [
+    {
+      "path": "mini-program/assets/icons/tab-plan.png",
+      "appPath": "assets/icons/tab-plan.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 2152,
+      "type": "tabbar-icon",
+      "usage": "tabBar「计划」常态图标（#8A94A6）"
+    },
+    {
+      "path": "mini-program/assets/icons/tab-plan-active.png",
+      "appPath": "assets/icons/tab-plan-active.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 1793,
+      "type": "tabbar-icon",
+      "usage": "tabBar「计划」选中态图标（#FF6B2C）"
+    },
+    {
+      "path": "mini-program/assets/icons/tab-checkin.png",
+      "appPath": "assets/icons/tab-checkin.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 3998,
+      "type": "tabbar-icon",
+      "usage": "tabBar「打卡」常态图标（#8A94A6）"
+    },
+    {
+      "path": "mini-program/assets/icons/tab-checkin-active.png",
+      "appPath": "assets/icons/tab-checkin-active.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 3302,
+      "type": "tabbar-icon",
+      "usage": "tabBar「打卡」选中态图标（#FF6B2C）"
+    },
+    {
+      "path": "mini-program/assets/icons/tab-feedback.png",
+      "appPath": "assets/icons/tab-feedback.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 3033,
+      "type": "tabbar-icon",
+      "usage": "tabBar「反馈」常态图标（#8A94A6）"
+    },
+    {
+      "path": "mini-program/assets/icons/tab-feedback-active.png",
+      "appPath": "assets/icons/tab-feedback-active.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 2516,
+      "type": "tabbar-icon",
+      "usage": "tabBar「反馈」选中态图标（#FF6B2C）"
+    },
+    {
+      "path": "mini-program/assets/icons/tab-diet.png",
+      "appPath": "assets/icons/tab-diet.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 3796,
+      "type": "tabbar-icon",
+      "usage": "tabBar「饮食」常态图标（#8A94A6）"
+    },
+    {
+      "path": "mini-program/assets/icons/tab-diet-active.png",
+      "appPath": "assets/icons/tab-diet-active.png",
+      "width": 81,
+      "height": 81,
+      "bytes": 3154,
+      "type": "tabbar-icon",
+      "usage": "tabBar「饮食」选中态图标（#FF6B2C）"
+    },
+    {
+      "path": "mini-program/assets/demo/squat/frame-1.png",
+      "appPath": "assets/demo/squat/frame-1.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 27424,
+      "type": "demo-frame",
+      "usage": "深蹲（Squat）第 1 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/squat/frame-2.png",
+      "appPath": "assets/demo/squat/frame-2.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 30441,
+      "type": "demo-frame",
+      "usage": "深蹲（Squat）第 2 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/squat/frame-3.png",
+      "appPath": "assets/demo/squat/frame-3.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 30583,
+      "type": "demo-frame",
+      "usage": "深蹲（Squat）第 3 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/squat/frame-4.png",
+      "appPath": "assets/demo/squat/frame-4.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 27227,
+      "type": "demo-frame",
+      "usage": "深蹲（Squat）第 4 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/plank/frame-1.png",
+      "appPath": "assets/demo/plank/frame-1.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 28784,
+      "type": "demo-frame",
+      "usage": "平板支撑（Plank）第 1 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/plank/frame-2.png",
+      "appPath": "assets/demo/plank/frame-2.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 32534,
+      "type": "demo-frame",
+      "usage": "平板支撑（Plank）第 2 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/plank/frame-3.png",
+      "appPath": "assets/demo/plank/frame-3.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 31258,
+      "type": "demo-frame",
+      "usage": "平板支撑（Plank）第 3 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/plank/frame-4.png",
+      "appPath": "assets/demo/plank/frame-4.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 30783,
+      "type": "demo-frame",
+      "usage": "平板支撑（Plank）第 4 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/glute_bridge/frame-1.png",
+      "appPath": "assets/demo/glute_bridge/frame-1.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 26512,
+      "type": "demo-frame",
+      "usage": "臀桥（Glute Bridge）第 1 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/glute_bridge/frame-2.png",
+      "appPath": "assets/demo/glute_bridge/frame-2.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 28190,
+      "type": "demo-frame",
+      "usage": "臀桥（Glute Bridge）第 2 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/glute_bridge/frame-3.png",
+      "appPath": "assets/demo/glute_bridge/frame-3.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 28852,
+      "type": "demo-frame",
+      "usage": "臀桥（Glute Bridge）第 3 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/glute_bridge/frame-4.png",
+      "appPath": "assets/demo/glute_bridge/frame-4.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 28536,
+      "type": "demo-frame",
+      "usage": "臀桥（Glute Bridge）第 4 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/high_knees/frame-1.png",
+      "appPath": "assets/demo/high_knees/frame-1.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 30839,
+      "type": "demo-frame",
+      "usage": "高抬腿（High Knees）第 1 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/high_knees/frame-2.png",
+      "appPath": "assets/demo/high_knees/frame-2.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 30556,
+      "type": "demo-frame",
+      "usage": "高抬腿（High Knees）第 2 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/high_knees/frame-3.png",
+      "appPath": "assets/demo/high_knees/frame-3.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 29466,
+      "type": "demo-frame",
+      "usage": "高抬腿（High Knees）第 3 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/high_knees/frame-4.png",
+      "appPath": "assets/demo/high_knees/frame-4.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 32169,
+      "type": "demo-frame",
+      "usage": "高抬腿（High Knees）第 4 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/jumping_jack/frame-1.png",
+      "appPath": "assets/demo/jumping_jack/frame-1.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 30899,
+      "type": "demo-frame",
+      "usage": "开合跳（Jumping Jack）第 1 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/jumping_jack/frame-2.png",
+      "appPath": "assets/demo/jumping_jack/frame-2.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 31887,
+      "type": "demo-frame",
+      "usage": "开合跳（Jumping Jack）第 2 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/jumping_jack/frame-3.png",
+      "appPath": "assets/demo/jumping_jack/frame-3.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 28890,
+      "type": "demo-frame",
+      "usage": "开合跳（Jumping Jack）第 3 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/jumping_jack/frame-4.png",
+      "appPath": "assets/demo/jumping_jack/frame-4.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 31376,
+      "type": "demo-frame",
+      "usage": "开合跳（Jumping Jack）第 4 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/wall_sit/frame-1.png",
+      "appPath": "assets/demo/wall_sit/frame-1.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 26974,
+      "type": "demo-frame",
+      "usage": "靠墙静蹲（Wall Sit）第 1 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/wall_sit/frame-2.png",
+      "appPath": "assets/demo/wall_sit/frame-2.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 26759,
+      "type": "demo-frame",
+      "usage": "靠墙静蹲（Wall Sit）第 2 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/wall_sit/frame-3.png",
+      "appPath": "assets/demo/wall_sit/frame-3.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 27460,
+      "type": "demo-frame",
+      "usage": "靠墙静蹲（Wall Sit）第 3 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/wall_sit/frame-4.png",
+      "appPath": "assets/demo/wall_sit/frame-4.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 25591,
+      "type": "demo-frame",
+      "usage": "靠墙静蹲（Wall Sit）第 4 帧关键帧"
+    },
+    {
+      "path": "mini-program/assets/demo/placeholder.png",
+      "appPath": "assets/demo/placeholder.png",
+      "width": 480,
+      "height": 480,
+      "bytes": 14180,
+      "type": "placeholder",
+      "usage": "暂无视频时以图文要点呈现的动作占位图（人物剪影 + 三点提示）"
+    },
+    {
+      "path": "mini-program/assets/images/share-cover.png",
+      "appPath": "assets/images/share-cover.png",
+      "width": 500,
+      "height": 400,
+      "bytes": 49247,
+      "type": "share-cover",
+      "usage": "分享卡片品牌封面（深色 #172033 + 主色 #FF6B2C，含「校练 / XIAOLIAN」）"
+    },
+    {
+      "path": "tools/_assets_preview.png",
+      "appPath": null,
+      "width": 1600,
+      "height": 1180,
+      "bytes": 405388,
+      "type": "preview",
+      "usage": "审阅用拼图：tabBar 图标 + 全部动作关键帧 + 占位图 + 分享封面（不随小程序发布）"
+    }
+  ]
+}
