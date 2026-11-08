@@ -118,8 +118,9 @@ Xiaolian/
 ```bash
 # 环境：Node 24（或微信开发者工具自带 Node），Python 3.11 + Pillow（仅素材脚本）
 node tools/smoke_test.js            # mock 全流程：67 项断言
-node tools/simulate.js              # 页面级闭环模拟（QA 维护）
-node tools/validate-miniprogram.js  # 静态校验：JSON/WXML 事件绑定/组件路径/资源/禁用依赖
+node tools/simulate.js              # 页面级闭环模拟：325 断言（QA 维护）
+node tools/validate-miniprogram.js  # 静态校验：445 项（JSON/WXML 事件绑定/组件路径/资源/禁用依赖）
+node tools/page_harness.js          # 6 个页面真实 require + stub wx 生命周期/交互冒烟：58 断言
 python tools/generate_assets.py     # 一键重建视觉素材（可选）
 ```
 

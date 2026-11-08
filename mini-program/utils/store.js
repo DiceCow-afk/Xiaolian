@@ -183,6 +183,15 @@ function getFeedbackByWeek(weekNo) {
   );
 }
 
+/** 按周移除反馈记录（更新反馈时先清理旧记录，保持同一周唯一） */
+function removeFeedbackByWeek(weekNo) {
+  const list = getFeedbacks().filter(function (item) {
+    return Number(item.week_no) !== Number(weekNo);
+  });
+  write(KEYS.feedbacks, list);
+  return list;
+}
+
 /* ================= 提醒设置 ================= */
 
 function getReminderSettings() {
@@ -261,6 +270,7 @@ module.exports = {
   getFeedbacks: getFeedbacks,
   addFeedback: addFeedback,
   getFeedbackByWeek: getFeedbackByWeek,
+  removeFeedbackByWeek: removeFeedbackByWeek,
   getReminderSettings: getReminderSettings,
   saveReminderSettings: saveReminderSettings,
   getSubscription: getSubscription,

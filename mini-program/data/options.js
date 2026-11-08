@@ -8,7 +8,7 @@ const GENDER_OPTIONS = [
   { value: 'female', label: '女' }
 ];
 
-/** 体测项目（当前覆盖 5 项，可按学校体育部标准扩展） */
+/** 体测项目（当前覆盖 6 项，可按学校体育部标准扩展） */
 const EVENT_OPTIONS = [
   { value: 'run_1000', label: '中长跑', desc: '1000 米（男）/ 800 米（女）' },
   { value: 'run_50', label: '50 米跑', desc: '短距离速度' },

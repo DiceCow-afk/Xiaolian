@@ -473,6 +473,13 @@ async function checkPlanPage() {
   check('周数据含阶段/日期范围/重点/说明（hero+周概览）', plan.weeks.every(function (w) {
     return !!w.phase_name && !!w.phase_key && !!w.date_range_text && !!w.weekly_focus && !!w.note && w.target_completion === w.sessions.length;
   }));
+  // date_range_text 独立重算（Lead 修复过 util.dateRangeText 拼接 bug，这里做回归锚点）
+  check('周日期范围文案与起止日期一致（dateRangeText 回归）', plan.weeks.every(function (w) {
+    const s = new Date(w.date_range.start);
+    const e = new Date(w.date_range.end);
+    const expected = (s.getMonth() + 1) + '月' + s.getDate() + '日 - ' + (e.getMonth() + 1) + '月' + e.getDate() + '日';
+    return w.date_range_text === expected;
+  }), plan.weeks.map(function (w) { return w.date_range_text; }));
   check('周阶段与 options.PHASE_META 对齐', plan.weeks.every(function (w) {
     return options.PHASE_META[w.phase_key] && options.PHASE_META[w.phase_key].name === w.phase_name;
   }));

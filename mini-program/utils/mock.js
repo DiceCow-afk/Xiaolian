@@ -1241,7 +1241,7 @@ function computeWeekStats(plan, weekNo) {
     done_count: doneCount,
     partial_count: partialCount,
     skipped_count: skippedCount,
-    completion_rate: week.sessions.length ? round1(score / week.sessions.length) : 0,
+    completion_rate: week.sessions.length ? Math.round((score / week.sessions.length) * 100) / 100 : 0,
     avg_rpe: rpeList.length ? round1(util.avg(rpeList)) : 0,
     discomfort_count: discomforts.length,
     records: records,
@@ -1670,13 +1670,8 @@ function handleSubmitWeeklyFeedback(data) {
 
   const existing = store.getFeedbackByWeek(payload.week_no);
   if (existing) {
-    // 重复提交视为更新：先移除旧记录
-    const list = store
-      .getFeedbacks()
-      .filter(function (f) {
-        return Number(f.week_no) !== Number(payload.week_no);
-      });
-    wx.setStorageSync(store.KEYS.feedbacks, list);
+    // 重复提交视为更新：先移除旧记录（同一周只保留一条反馈）
+    store.removeFeedbackByWeek(payload.week_no);
   }
 
   const profile = store.getProfile() || plan.meta.profile_snapshot;
