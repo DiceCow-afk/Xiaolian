@@ -1,0 +1,527 @@
+/* ============================================================
+ * 动作示范页（详情页）
+ * 关键帧播放器 + 禁忌警示 + 动作信息 + 5 段图文内容 + 吸底操作栏
+ * 复用 app.wxss 的设计令牌与通用类（card / btn / bottom-bar 等）
+ * ============================================================ */
+.page--action {
+  padding-bottom: 40rpx;
+}
+
+/* hero 内的元信息值（器械 / 空间字段可能较长，字号收小避免溢出） */
+.act-meta-value {
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  word-break: break-all;
+}
+.hero--action .hero-meta {
+  gap: 12rpx;
+}
+.hero--action .hero-meta-item {
+  min-width: 0;
+  max-width: 100%;
+  padding: 12rpx 18rpx;
+}
+
+/* ---------- 关键帧播放器 ---------- */
+.player-card {
+  padding: 24rpx;
+}
+.player-badge {
+  flex-shrink: 0;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  color: var(--xl-brand-deep);
+  background: var(--xl-brand-soft);
+}
+.player-stage {
+  position: relative;
+  margin-top: 18rpx;
+  height: 560rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #f7f9fc 0%, #eef2f8 55%, #e6ecf5 100%);
+  border: 1rpx solid var(--xl-line-2);
+}
+.player-img {
+  width: 100%;
+  height: 100%;
+}
+.player-count {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  color: var(--xl-ink-2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid var(--xl-line);
+}
+.player-text-tip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20rpx;
+  text-align: center;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--xl-ink-2);
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+}
+.player-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  padding: 40rpx;
+  text-align: center;
+}
+.player-fallback-icon {
+  font-size: 72rpx;
+  line-height: 1.2;
+}
+.player-fallback-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--xl-ink);
+}
+.player-fallback-hint {
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--xl-muted);
+}
+.player-ctrl {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+.player-play-btn {
+  flex-shrink: 0;
+  padding: 12rpx 30rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6b2c 0%, #ff8f4d 100%);
+}
+.player-play-btn:active {
+  opacity: 0.86;
+}
+.player-dots {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.player-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #d7dce7;
+  transition: all 0.2s ease;
+}
+.player-dot.is-active {
+  width: 40rpx;
+  border-radius: 999rpx;
+  background: var(--xl-brand);
+}
+.player-dots-hint {
+  margin-left: auto;
+  font-size: 20rpx;
+  color: var(--xl-muted-2);
+}
+.player-hint {
+  margin-top: 18rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx solid var(--xl-line-2);
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--xl-muted);
+}
+
+/* ---------- 身体限制禁忌卡 ---------- */
+.conflict-card {
+  padding: 24rpx 26rpx;
+  background: var(--xl-danger-soft);
+  border: 2rpx solid #ffd1cd;
+  box-shadow: none;
+}
+.conflict-hd {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.conflict-icon {
+  font-size: 30rpx;
+}
+.conflict-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #c9342a;
+}
+.conflict-text {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: #8f2d26;
+}
+.conflict-btn {
+  margin-top: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--xl-danger);
+}
+.conflict-btn:active {
+  opacity: 0.88;
+}
+
+/* ---------- 动作信息 ---------- */
+.info-card {
+  padding: 26rpx 28rpx;
+}
+.dim-list {
+  margin-top: 16rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.dim-tag {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #f5f7fb;
+}
+.dim-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}
+.dim-name {
+  font-size: 22rpx;
+  color: var(--xl-ink-2);
+}
+.dim-weight {
+  font-size: 20rpx;
+  color: var(--xl-muted-2);
+}
+.info-grid {
+  margin-top: 18rpx;
+  border-top: 1rpx solid var(--xl-line-2);
+}
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid var(--xl-line-2);
+}
+.info-row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.info-label {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: var(--xl-muted);
+}
+.info-value {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--xl-ink-2);
+}
+
+/* ---------- 5 段内容 ---------- */
+.tab-card {
+  padding: 24rpx;
+}
+.act-tabs {
+  display: flex;
+  gap: 6rpx;
+  padding: 6rpx;
+  border-radius: 18rpx;
+  background: #f5f7fb;
+}
+.act-tab {
+  flex: 1;
+  min-width: 0;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14rpx;
+  font-size: 24rpx;
+  color: var(--xl-muted);
+  transition: all 0.18s ease;
+}
+.act-tab.is-active {
+  background: #ffffff;
+  color: var(--xl-brand-deep);
+  font-weight: 700;
+  box-shadow: 0 6rpx 16rpx rgba(23, 32, 51, 0.08);
+}
+.tab-body {
+  margin-top: 22rpx;
+}
+.tab-empty {
+  padding: 40rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--xl-muted-2);
+}
+
+/* 动作要点 */
+.kp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+.kp-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+.kp-dot {
+  flex-shrink: 0;
+  width: 14rpx;
+  height: 14rpx;
+  margin-top: 12rpx;
+  border-radius: 50%;
+  background: var(--xl-brand);
+}
+.kp-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 26rpx;
+  line-height: 1.65;
+  color: var(--xl-ink-2);
+}
+.tip-block {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 18rpx;
+  background: var(--xl-info-soft);
+}
+.tip-block--warn {
+  background: var(--xl-warning-soft);
+}
+.tip-block-icon {
+  flex-shrink: 0;
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+.tip-block-main {
+  flex: 1;
+  min-width: 0;
+}
+.tip-block-title {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--xl-ink);
+}
+.tip-block-text {
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--xl-ink-2);
+}
+
+/* 步骤时间线 */
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+.step-no {
+  flex-shrink: 0;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6b2c 0%, #ff8f4d 100%);
+}
+.step-main {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 26rpx;
+}
+.step-text {
+  font-size: 26rpx;
+  line-height: 1.65;
+  color: var(--xl-ink-2);
+}
+.step-line {
+  margin-top: 12rpx;
+  width: 2rpx;
+  height: 24rpx;
+  background: var(--xl-line);
+}
+
+/* 常见错误 */
+.err-item {
+  padding: 18rpx 20rpx;
+  border-radius: 18rpx;
+  background: #f7f9fc;
+}
+.err-item + .err-item {
+  margin-top: 16rpx;
+}
+.err-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+.err-row + .err-row {
+  margin-top: 12rpx;
+}
+.err-tag {
+  flex-shrink: 0;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.err-tag--wrong {
+  color: #c9342a;
+  background: var(--xl-danger-soft);
+}
+.err-tag--fix {
+  color: #0d8f52;
+  background: var(--xl-success-soft);
+}
+.err-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--xl-ink-2);
+}
+
+/* 正误对比 */
+.cmp-head,
+.cmp-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid var(--xl-line-2);
+}
+.cmp-head {
+  padding-top: 0;
+}
+.cmp-row:last-child {
+  border-bottom: none;
+}
+.cmp-aspect {
+  flex: 0 0 130rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--xl-muted);
+  line-height: 1.6;
+}
+.cmp-col {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+.cmp-col--correct {
+  color: #0d8f52;
+}
+.cmp-col--wrong {
+  color: #c9342a;
+}
+.cmp-head .cmp-col {
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+/* 替代动作 */
+.alt-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx;
+  border-radius: 18rpx;
+  background: #f7f9fc;
+}
+.alt-item + .alt-item {
+  margin-top: 14rpx;
+}
+.alt-item:active {
+  background: #f0f3f8;
+}
+.alt-type {
+  flex-shrink: 0;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+.alt-type--reg {
+  color: #1c6bc4;
+  background: var(--xl-info-soft);
+}
+.alt-type--pro {
+  color: var(--xl-brand-deep);
+  background: var(--xl-brand-soft);
+}
+.alt-main {
+  flex: 1;
+  min-width: 0;
+}
+.alt-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--xl-ink);
+}
+.alt-sub {
+  margin-top: 2rpx;
+  font-size: 22rpx;
+  color: var(--xl-muted);
+}
+.alt-arrow {
+  flex-shrink: 0;
+  font-size: 32rpx;
+  color: var(--xl-muted-2);
+}
+
+/* ---------- 错误态出口 ---------- */
+.error-back {
+  margin-top: 24rpx;
+  padding-bottom: 40rpx;
+}
+
+/* ---------- 底部吸底栏 ---------- */
+.bottom-bar .btn-ghost {
+  background: #f4f6fa;
+}

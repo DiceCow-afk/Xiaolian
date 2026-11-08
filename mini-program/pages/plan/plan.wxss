@@ -1,0 +1,380 @@
+/* ============================================================
+ * 计划展示页（tab 0）
+ * 深色 hero + 4 周切换器 + 周概览 + 训练日列表 + 解释弹层
+ * 复用 app.wxss 的设计令牌与通用类（card / btn / section-hd 等）
+ * ============================================================ */
+.page--plan {
+  padding-bottom: 40rpx;
+}
+
+/* hero 元信息：4 块数据按 2×2 排列，避免最后一块单独换行显得空 */
+.hero--plan .hero-meta {
+  gap: 14rpx;
+}
+.hero--plan .hero-meta-item {
+  flex: 1 1 40%;
+  min-width: 0;
+}
+
+/* ---------- 空状态 ---------- */
+.empty-wrap {
+  padding: 40rpx 0 20rpx;
+}
+.empty-extra {
+  margin-top: 28rpx;
+  text-align: center;
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+  color: var(--xl-muted-2);
+}
+
+/* ---------- 顶部提示条（stale / 约束变更） ---------- */
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 22rpx;
+  margin-bottom: 20rpx;
+  border-radius: 22rpx;
+  border: 2rpx solid transparent;
+}
+.notice--warn {
+  background: var(--xl-warning-soft);
+  border-color: #ffe1ad;
+}
+.notice--info {
+  background: var(--xl-info-soft);
+  border-color: #cfe4ff;
+}
+.notice-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+.notice-icon {
+  font-size: 30rpx;
+  line-height: 1.3;
+}
+.notice-text {
+  flex: 1;
+  min-width: 0;
+}
+.notice-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.notice--warn .notice-title {
+  color: #b96a00;
+}
+.notice--info .notice-title {
+  color: #1c6bc4;
+}
+.notice-desc {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--xl-muted);
+}
+.notice-btn {
+  flex-shrink: 0;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6b2c 0%, #ff8f4d 100%);
+}
+.notice-btn:active {
+  opacity: 0.86;
+}
+.notice-btn.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ---------- 4 周切换器 ---------- */
+.week-switch {
+  display: flex;
+  gap: 10rpx;
+  padding: 10rpx;
+  margin-bottom: 20rpx;
+  border-radius: 24rpx;
+  background: var(--xl-card);
+  box-shadow: var(--xl-shadow);
+}
+.week-tab {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rpx;
+  height: 104rpx;
+  border-radius: 16rpx;
+  background: #f5f7fb;
+  transition: background 0.2s ease;
+}
+.week-tab.is-active {
+  background: var(--xl-brand-soft);
+  box-shadow: inset 0 0 0 2rpx var(--xl-brand);
+}
+.week-tab:active {
+  transform: scale(0.97);
+}
+.week-tab-no {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--xl-ink-2);
+}
+.week-tab.is-active .week-tab-no {
+  color: var(--xl-brand-deep);
+}
+.week-tab-phase {
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.week-tab-dot {
+  position: absolute;
+  top: 10rpx;
+  right: 12rpx;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: var(--xl-brand);
+}
+
+/* ---------- 周概览卡 ---------- */
+.week-ov {
+  padding: 26rpx 28rpx;
+}
+.ov-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.ov-main {
+  flex: 1;
+  min-width: 0;
+}
+.ov-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--xl-ink);
+}
+.ov-date {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--xl-muted);
+}
+.phase-badge {
+  flex-shrink: 0;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.ov-focus {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 18rpx;
+  background: #f7f9fc;
+}
+.ov-focus-label {
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+  color: var(--xl-brand-deep);
+  background: var(--xl-brand-soft);
+}
+.ov-focus-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--xl-ink-2);
+}
+.ov-note {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--xl-muted);
+}
+
+/* ---------- 训练日列表 ---------- */
+.day-empty {
+  padding: 40rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--xl-muted-2);
+}
+
+/* ---------- 计划解释卡 ---------- */
+.explain-card {
+  margin-top: 8rpx;
+}
+.explain-tag {
+  flex-shrink: 0;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #b96a00;
+  background: var(--xl-warning-soft);
+}
+.explain-btn {
+  height: 80rpx;
+  font-size: 26rpx;
+}
+
+/* ---------- 底部操作区 ---------- */
+.bottom-actions {
+  margin-top: 8rpx;
+}
+
+/* ---------- 计划解释底部弹层 ---------- */
+.ex-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(23, 32, 51, 0.5);
+}
+.ex-sheet {
+  width: 100%;
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+  padding: 34rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  border-radius: 32rpx 32rpx 0 0;
+  background: var(--xl-card);
+}
+.ex-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.ex-hd-main {
+  flex: 1;
+  min-width: 0;
+}
+.ex-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--xl-ink);
+}
+.ex-badge {
+  margin-top: 10rpx;
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  color: #b96a00;
+  background: var(--xl-warning-soft);
+}
+.ex-close {
+  flex-shrink: 0;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  line-height: 1;
+  color: var(--xl-muted);
+  background: #f4f6fa;
+}
+.ex-loading {
+  padding: 70rpx 0 50rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22rpx;
+}
+.ex-spinner {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border: 6rpx solid #ffe1d2;
+  border-top-color: var(--xl-brand);
+}
+.ex-loading-text {
+  font-size: 24rpx;
+  color: var(--xl-muted);
+}
+.ex-error {
+  padding: 60rpx 0 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+  text-align: center;
+}
+.ex-error-icon {
+  font-size: 48rpx;
+}
+.ex-error-text {
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: var(--xl-ink-2);
+}
+.ex-retry {
+  margin-top: 6rpx;
+  padding: 12rpx 36rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--xl-brand);
+  background: var(--xl-brand-soft);
+}
+.ex-body {
+  margin-top: 24rpx;
+}
+.ex-line {
+  min-height: 4rpx;
+}
+.ex-line--blank {
+  height: 18rpx;
+}
+.ex-line--heading {
+  margin-top: 14rpx;
+}
+.ex-line--heading .ex-line-text {
+  font-weight: 700;
+  color: var(--xl-ink);
+}
+.ex-line-text {
+  font-size: 26rpx;
+  line-height: 1.75;
+  color: var(--xl-ink-2);
+}
+.ex-ft {
+  margin-top: 24rpx;
+}
+.ex-model {
+  margin-top: 16rpx;
+  text-align: center;
+  font-size: 20rpx;
+  color: var(--xl-muted-2);
+}

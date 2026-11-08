@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "周反馈",
+  "navigationBarBackgroundColor": "#2F5BEA",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F4F6FA",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "state-view": "../../components/state-view/index",
+    "empty-state": "../../components/empty-state/index",
+    "tag-picker": "../../components/tag-picker/index",
+    "rpe-slider": "../../components/rpe-slider/index",
+    "plan-card": "../../components/plan-card/index"
+  }
+}

@@ -18,8 +18,8 @@
     "placeholder": 1,
     "shareCovers": 1,
     "preview": 1,
-    "totalPngBytes": 1196549,
-    "totalPngKB": 1168.5,
+    "totalPngBytes": 1136488,
+    "totalPngKB": 1109.9,
     "limitBytes": 2097152,
     "withinLimit": true
   },
@@ -195,7 +195,7 @@
       "appPath": "assets/demo/squat/frame-1.png",
       "width": 480,
       "height": 480,
-      "bytes": 27424,
+      "bytes": 25386,
       "type": "demo-frame",
       "usage": "深蹲（Squat）第 1 帧关键帧"
     },
@@ -204,7 +204,7 @@
       "appPath": "assets/demo/squat/frame-2.png",
       "width": 480,
       "height": 480,
-      "bytes": 30441,
+      "bytes": 29256,
       "type": "demo-frame",
       "usage": "深蹲（Squat）第 2 帧关键帧"
     },
@@ -213,7 +213,7 @@
       "appPath": "assets/demo/squat/frame-3.png",
       "width": 480,
       "height": 480,
-      "bytes": 30583,
+      "bytes": 26746,
       "type": "demo-frame",
       "usage": "深蹲（Squat）第 3 帧关键帧"
     },
@@ -222,7 +222,7 @@
       "appPath": "assets/demo/squat/frame-4.png",
       "width": 480,
       "height": 480,
-      "bytes": 27227,
+      "bytes": 27964,
       "type": "demo-frame",
       "usage": "深蹲（Squat）第 4 帧关键帧"
     },
@@ -231,7 +231,7 @@
       "appPath": "assets/demo/plank/frame-1.png",
       "width": 480,
       "height": 480,
-      "bytes": 28784,
+      "bytes": 27735,
       "type": "demo-frame",
       "usage": "平板支撑（Plank）第 1 帧关键帧"
     },
@@ -240,7 +240,7 @@
       "appPath": "assets/demo/plank/frame-2.png",
       "width": 480,
       "height": 480,
-      "bytes": 32534,
+      "bytes": 30038,
       "type": "demo-frame",
       "usage": "平板支撑（Plank）第 2 帧关键帧"
     },
@@ -249,7 +249,7 @@
       "appPath": "assets/demo/plank/frame-3.png",
       "width": 480,
       "height": 480,
-      "bytes": 31258,
+      "bytes": 28547,
       "type": "demo-frame",
       "usage": "平板支撑（Plank）第 3 帧关键帧"
     },
@@ -258,7 +258,7 @@
       "appPath": "assets/demo/plank/frame-4.png",
       "width": 480,
       "height": 480,
-      "bytes": 30783,
+      "bytes": 29674,
       "type": "demo-frame",
       "usage": "平板支撑（Plank）第 4 帧关键帧"
     },
@@ -267,7 +267,7 @@
       "appPath": "assets/demo/glute_bridge/frame-1.png",
       "width": 480,
       "height": 480,
-      "bytes": 26512,
+      "bytes": 21590,
       "type": "demo-frame",
       "usage": "臀桥（Glute Bridge）第 1 帧关键帧"
     },
@@ -276,7 +276,7 @@
       "appPath": "assets/demo/glute_bridge/frame-2.png",
       "width": 480,
       "height": 480,
-      "bytes": 28190,
+      "bytes": 23660,
       "type": "demo-frame",
       "usage": "臀桥（Glute Bridge）第 2 帧关键帧"
     },
@@ -285,7 +285,7 @@
       "appPath": "assets/demo/glute_bridge/frame-3.png",
       "width": 480,
       "height": 480,
-      "bytes": 28852,
+      "bytes": 24067,
       "type": "demo-frame",
       "usage": "臀桥（Glute Bridge）第 3 帧关键帧"
     },
@@ -294,7 +294,7 @@
       "appPath": "assets/demo/glute_bridge/frame-4.png",
       "width": 480,
       "height": 480,
-      "bytes": 28536,
+      "bytes": 24539,
       "type": "demo-frame",
       "usage": "臀桥（Glute Bridge）第 4 帧关键帧"
     },
@@ -303,7 +303,7 @@
       "appPath": "assets/demo/high_knees/frame-1.png",
       "width": 480,
       "height": 480,
-      "bytes": 30839,
+      "bytes": 28328,
       "type": "demo-frame",
       "usage": "高抬腿（High Knees）第 1 帧关键帧"
     },
@@ -312,7 +312,7 @@
       "appPath": "assets/demo/high_knees/frame-2.png",
       "width": 480,
       "height": 480,
-      "bytes": 30556,
+      "bytes": 27504,
       "type": "demo-frame",
       "usage": "高抬腿（High Knees）第 2 帧关键帧"
     },
@@ -321,7 +321,7 @@
       "appPath": "assets/demo/high_knees/frame-3.png",
       "width": 480,
       "height": 480,
-      "bytes": 29466,
+      "bytes": 25858,
       "type": "demo-frame",
       "usage": "高抬腿（High Knees）第 3 帧关键帧"
     },
@@ -330,7 +330,7 @@
       "appPath": "assets/demo/high_knees/frame-4.png",
       "width": 480,
       "height": 480,
-      "bytes": 32169,
+      "bytes": 29307,
       "type": "demo-frame",
       "usage": "高抬腿（High Knees）第 4 帧关键帧"
     },
@@ -339,7 +339,7 @@
       "appPath": "assets/demo/jumping_jack/frame-1.png",
       "width": 480,
       "height": 480,
-      "bytes": 30899,
+      "bytes": 28585,
       "type": "demo-frame",
       "usage": "开合跳（Jumping Jack）第 1 帧关键帧"
     },
@@ -348,7 +348,7 @@
       "appPath": "assets/demo/jumping_jack/frame-2.png",
       "width": 480,
       "height": 480,
-      "bytes": 31887,
+      "bytes": 31858,
       "type": "demo-frame",
       "usage": "开合跳（Jumping Jack）第 2 帧关键帧"
     },
@@ -357,7 +357,7 @@
       "appPath": "assets/demo/jumping_jack/frame-3.png",
       "width": 480,
       "height": 480,
-      "bytes": 28890,
+      "bytes": 28903,
       "type": "demo-frame",
       "usage": "开合跳（Jumping Jack）第 3 帧关键帧"
     },
@@ -366,7 +366,7 @@
       "appPath": "assets/demo/jumping_jack/frame-4.png",
       "width": 480,
       "height": 480,
-      "bytes": 31376,
+      "bytes": 31379,
       "type": "demo-frame",
       "usage": "开合跳（Jumping Jack）第 4 帧关键帧"
     },
@@ -375,7 +375,7 @@
       "appPath": "assets/demo/wall_sit/frame-1.png",
       "width": 480,
       "height": 480,
-      "bytes": 26974,
+      "bytes": 24981,
       "type": "demo-frame",
       "usage": "靠墙静蹲（Wall Sit）第 1 帧关键帧"
     },
@@ -384,7 +384,7 @@
       "appPath": "assets/demo/wall_sit/frame-2.png",
       "width": 480,
       "height": 480,
-      "bytes": 26759,
+      "bytes": 26155,
       "type": "demo-frame",
       "usage": "靠墙静蹲（Wall Sit）第 2 帧关键帧"
     },
@@ -393,7 +393,7 @@
       "appPath": "assets/demo/wall_sit/frame-3.png",
       "width": 480,
       "height": 480,
-      "bytes": 27460,
+      "bytes": 25081,
       "type": "demo-frame",
       "usage": "靠墙静蹲（Wall Sit）第 3 帧关键帧"
     },
@@ -402,7 +402,7 @@
       "appPath": "assets/demo/wall_sit/frame-4.png",
       "width": 480,
       "height": 480,
-      "bytes": 25591,
+      "bytes": 24286,
       "type": "demo-frame",
       "usage": "靠墙静蹲（Wall Sit）第 4 帧关键帧"
     },
@@ -411,7 +411,7 @@
       "appPath": "assets/demo/placeholder.png",
       "width": 480,
       "height": 480,
-      "bytes": 14180,
+      "bytes": 13399,
       "type": "placeholder",
       "usage": "暂无视频时以图文要点呈现的动作占位图（人物剪影 + 三点提示）"
     },
@@ -429,7 +429,7 @@
       "appPath": null,
       "width": 1600,
       "height": 1180,
-      "bytes": 405388,
+      "bytes": 398671,
       "type": "preview",
       "usage": "审阅用拼图：tabBar 图标 + 全部动作关键帧 + 占位图 + 分享封面（不随小程序发布）"
     }

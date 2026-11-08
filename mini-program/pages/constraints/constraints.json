@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "填写训练约束",
+  "navigationBarBackgroundColor": "#FF6B2C",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F4F6FA",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "tag-picker": "/components/tag-picker/index",
+    "stepper": "/components/stepper/index",
+    "state-view": "/components/state-view/index",
+    "empty-state": "/components/empty-state/index"
+  }
+}

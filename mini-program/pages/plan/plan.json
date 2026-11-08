@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "训练计划",
+  "navigationBarBackgroundColor": "#172033",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F4F6FA",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "plan-card": "../../components/plan-card/index",
+    "state-view": "../../components/state-view/index",
+    "empty-state": "../../components/empty-state/index",
+    "safety-banner": "../../components/safety-banner/index"
+  }
+}

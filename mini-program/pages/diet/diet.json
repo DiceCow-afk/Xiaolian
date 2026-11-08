@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "饮食提示",
+  "navigationBarBackgroundColor": "#12B76A",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F4F6FA",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "state-view": "/components/state-view/index",
+    "tag-picker": "/components/tag-picker/index",
+    "empty-state": "/components/empty-state/index"
+  }
+}

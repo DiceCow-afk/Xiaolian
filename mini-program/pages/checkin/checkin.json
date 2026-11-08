@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "提醒与打卡",
+  "navigationBarBackgroundColor": "#FF6B2C",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F4F6FA",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "state-view": "../../components/state-view/index",
+    "empty-state": "../../components/empty-state/index",
+    "tag-picker": "../../components/tag-picker/index",
+    "rpe-slider": "../../components/rpe-slider/index",
+    "plan-card": "../../components/plan-card/index"
+  }
+}

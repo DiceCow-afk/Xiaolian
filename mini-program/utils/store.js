@@ -135,6 +135,20 @@ function addCheckin(record) {
   return record;
 }
 
+/**
+ * 以训练日（session_id）为粒度 upsert 打卡记录：
+ * 同一训练日重复提交视为「更新打卡」，不产生重复记录（服务端同样以唯一键约束）。
+ */
+function upsertCheckin(record) {
+  if (!record || !record.session_id) return addCheckin(record);
+  const list = getCheckins().filter(function (item) {
+    return item.session_id !== record.session_id;
+  });
+  list.unshift(record);
+  write(KEYS.checkins, list.slice(0, 200));
+  return record;
+}
+
 function getTodayCheckin() {
   const today = new Date();
   const y = today.getFullYear();
@@ -242,6 +256,7 @@ module.exports = {
   isProfileDirty: isProfileDirty,
   getCheckins: getCheckins,
   addCheckin: addCheckin,
+  upsertCheckin: upsertCheckin,
   getTodayCheckin: getTodayCheckin,
   getFeedbacks: getFeedbacks,
   addFeedback: addFeedback,

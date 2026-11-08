@@ -272,10 +272,12 @@ function handleParseProfile(data) {
     filled.push('单次时长');
   }
 
-  // 周频次
-  const freqMatch = text.match(/每周\s*(\d)\s*次/);
+  // 周频次（兼容阿拉伯数字与中文数字：每周三次 / 一周两练）
+  const CN_NUM = { 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5 };
+  const freqMatch = text.match(/每?周\s*([一二两三四五1-5])\s*[次练]/);
   if (freqMatch) {
-    const v = util.clamp(Number(freqMatch[1]), options.FREQUENCY_RANGE.min, options.FREQUENCY_RANGE.max);
+    const raw = freqMatch[1];
+    const v = util.clamp(CN_NUM[raw] || Number(raw), options.FREQUENCY_RANGE.min, options.FREQUENCY_RANGE.max);
     parsed.weekly_frequency = v;
     filled.push('每周次数');
   }
@@ -909,6 +911,12 @@ function generatePlanInternal(profile, diagnosis, extra) {
       );
     });
 
+    // 体测日之后不再安排训练：避免 4 周模板与实际体测时间冲突
+    const sessionsBeforeTest = sessions.filter(function (session) {
+      return session.date <= testDate;
+    });
+    const droppedAfterTest = sessions.length - sessionsBeforeTest.length;
+
     weeks.push({
       week_no: weekNo,
       phase: phaseKey,
@@ -925,10 +933,13 @@ function generatePlanInternal(profile, diagnosis, extra) {
             return d.name;
           })
           .join('、'),
-      target_completion: sessions.length,
-      sessions: sessions,
+      target_completion: sessionsBeforeTest.length,
+      sessions: sessionsBeforeTest,
       status: 'pending',
-      note: phase.note
+      note:
+        droppedAfterTest > 0
+          ? phase.note + '（本周有 ' + droppedAfterTest + ' 个训练日已过体测日，不再安排）'
+          : phase.note
     });
   }
 
@@ -1118,6 +1129,22 @@ function handleExplainPlan(data) {
 
 /* ================= 打卡 ================= */
 
+/**
+ * 同一训练日只保留最新一条打卡记录。
+ * 与后端「(user_id, plan_id, session_id) 唯一键 + upsert」保持一致，避免重复提交造成统计翻倍。
+ */
+function latestCheckins(records) {
+  const seen = {};
+  const list = [];
+  (records || []).forEach(function (record) {
+    if (!record || !record.session_id) return;
+    if (seen[record.session_id]) return;
+    seen[record.session_id] = true;
+    list.push(record);
+  });
+  return list;
+}
+
 function computeStreak() {
   const checkins = store.getCheckins().filter(function (c) {
     return c.status && c.status !== 'skipped';
@@ -1173,7 +1200,7 @@ function computeWeekStats(plan, weekNo) {
       streak: computeStreak()
     };
   }
-  const checkins = store.getCheckins();
+  const checkins = latestCheckins(store.getCheckins());
   const records = checkins.filter(function (c) {
     return Number(c.week_no) === Number(week.week_no);
   });
@@ -1263,12 +1290,12 @@ function handleCheckin(data) {
     created_at: nowIso()
   };
 
-  // 更新计划内训练日状态（服务端行为）
+  // 更新计划内训练日状态（服务端行为）：先 upsert 打卡记录，再重算周状态，保证统计口径一致
   targetSession.status = payload.status;
   targetSession.checkin_id = record.checkin_id;
+  store.upsertCheckin(record);
   targetWeek.status = computeWeekStatsAfterUpdate(plan, targetWeek);
   store.savePlan(plan);
-  store.addCheckin(record);
   store.consumeSubscription(1);
 
   const safetyReview = discomfort.length
@@ -1296,7 +1323,7 @@ function handleCheckin(data) {
 }
 
 function computeWeekStatsAfterUpdate(plan, week) {
-  const records = store.getCheckins().filter(function (c) {
+  const records = latestCheckins(store.getCheckins()).filter(function (c) {
     return Number(c.week_no) === Number(week.week_no);
   });
   const recordMap = {};
@@ -1320,7 +1347,7 @@ function computeWeekStatsAfterUpdate(plan, week) {
 function handleGetCheckins(params) {
   const plan = store.getPlan();
   const query = params || {};
-  const records = store.getCheckins();
+  const records = latestCheckins(store.getCheckins());
   const weekNo = query.week_no
     ? Number(query.week_no)
     : plan
@@ -1605,6 +1632,33 @@ function handleGetWeeklyFeedback(params) {
   });
 }
 
+/**
+ * 周调整幂等：首次调整某个目标周之前，把该周的「基线」（生成时的原始周）存进 plan.meta.week_baselines。
+ * 用户对同一周重复提交/更新反馈时，先还原基线再应用本次调整，避免组次被反复叠加。
+ */
+function ensureWeekBaseline(plan, targetWeekNo) {
+  if (!plan.meta) plan.meta = {};
+  if (!plan.meta.week_baselines) plan.meta.week_baselines = {};
+  const key = String(targetWeekNo);
+  const targetWeek = plan.weeks.filter(function (w) {
+    return w.week_no === targetWeekNo;
+  })[0];
+  if (!targetWeek) return null;
+  if (!plan.meta.week_baselines[key]) {
+    plan.meta.week_baselines[key] = util.deepClone(targetWeek);
+  }
+  return plan.meta.week_baselines[key];
+}
+
+function restoreWeekBaseline(plan, targetWeekNo) {
+  const baseline = ensureWeekBaseline(plan, targetWeekNo);
+  if (!baseline) return false;
+  plan.weeks = plan.weeks.map(function (w) {
+    return w.week_no === targetWeekNo ? util.deepClone(baseline) : w;
+  });
+  return true;
+}
+
 function handleSubmitWeeklyFeedback(data) {
   const payload = data || {};
   const plan = store.getPlan();
@@ -1627,6 +1681,9 @@ function handleSubmitWeeklyFeedback(data) {
 
   const profile = store.getProfile() || plan.meta.profile_snapshot;
   const adjustment = evaluateAdjustment(payload);
+  // 幂等：先把「目标周」还原到首次调整前的基线，再应用本次调整，避免重复提交叠加组次
+  const targetWeekNo = Number(payload.week_no) + 1;
+  restoreWeekBaseline(plan, targetWeekNo);
   const preview = buildNextWeekPreview(plan, payload.week_no, adjustment, profile);
 
   // 把下周预览写回计划（若存在下周），体现「动态调整」

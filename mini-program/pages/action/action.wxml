@@ -1,0 +1,227 @@
+<view class="page page--action">
+  <!-- 深色 Hero：导航栏同为 #172033 -->
+  <view class="hero hero-dark hero--action">
+    <view class="hero-deco hero-deco-1"></view>
+    <view class="hero-deco hero-deco-2"></view>
+    <text class="hero-kicker">{{heroKicker}}</text>
+    <view class="hero-title">{{heroTitle}}</view>
+    <view class="hero-sub">{{heroSub}}</view>
+    <view class="hero-meta" wx:if="{{heroMeta.length}}">
+      <view class="hero-meta-item" wx:for="{{heroMeta}}" wx:key="label">
+        <text class="act-meta-value">{{item.value}}</text>
+        <text class="hero-meta-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="content">
+    <state-view
+      state="{{viewState}}"
+      text="{{stateText}}"
+      error-title="动作加载失败"
+      retry-text="重新加载"
+      bindretry="loadData"
+    >
+      <block wx:if="{{action}}">
+        <!-- 关键帧播放器 -->
+        <view class="card player-card fade-in">
+          <view class="card-hd">
+            <view class="card-title">{{demoType === 'frames' ? '关键帧示范' : '图文示范'}}</view>
+            <view class="player-badge">{{demoBadge}}</view>
+          </view>
+
+          <view class="player-stage">
+            <image
+              wx:if="{{!imageBroken}}"
+              class="player-img"
+              src="{{frameSrc}}"
+              mode="aspectFit"
+              binderror="onFrameError"
+            ></image>
+            <view wx:else class="player-fallback">
+              <text class="player-fallback-icon">🏃</text>
+              <text class="player-fallback-title">{{heroTitle}}</text>
+              <text class="player-fallback-hint">示范图暂不可用，请按下方图文要点练习</text>
+            </view>
+            <view wx:if="{{demoType === 'frames'}}" class="player-count">
+              {{frameIndex + 1}}/{{frameCount}}
+            </view>
+            <view wx:if="{{demoType === 'text'}}" class="player-text-tip">
+              该动作暂无视频示范，以下为图文要点
+            </view>
+          </view>
+
+          <view wx:if="{{demoType === 'frames'}}" class="player-ctrl">
+            <view class="player-play-btn" bindtap="onTogglePlay">
+              {{playing ? '暂停播放' : '自动播放'}}
+            </view>
+            <view class="player-dots">
+              <view
+                wx:for="{{frames}}"
+                wx:key="*this"
+                class="player-dot {{index === frameIndex ? 'is-active' : ''}}"
+                data-index="{{index}}"
+                bindtap="onDotTap"
+              ></view>
+            </view>
+            <text class="player-dots-hint">{{frameError ? '图片加载失败' : '点击圆点切换帧'}}</text>
+          </view>
+
+          <view class="player-hint">🛡️ 示范仅用于动作要点提示，不能替代教练现场指导</view>
+        </view>
+
+        <!-- 身体限制禁忌警示 + 降阶入口 -->
+        <view wx:if="{{conflict}}" class="card conflict-card fade-in">
+          <view class="conflict-hd">
+            <text class="conflict-icon">⚠️</text>
+            <text class="conflict-title">与你的身体限制存在禁忌</text>
+          </view>
+          <view class="conflict-text">
+            该动作与你的身体限制（{{conflictText}}）存在禁忌，建议改做降阶动作；训练中若出现疼痛请立即停止并咨询体育老师。
+          </view>
+          <view wx:if="{{regression}}" class="conflict-btn" bindtap="onGotoRegression">
+            查看降阶动作：{{regression.name}}
+          </view>
+        </view>
+
+        <!-- 动作信息：能力维度 + 器械 / 空间 / 难度 / 组次 -->
+        <view class="card info-card">
+          <view class="card-title">动作信息</view>
+          <view wx:if="{{dimensions.length}}" class="dim-list">
+            <view wx:for="{{dimensions}}" wx:key="key" class="dim-tag">
+              <view class="dim-dot" style="background: {{item.color}};"></view>
+              <text class="dim-name">{{item.name}}</text>
+              <text class="dim-weight">{{item.weightText}}</text>
+            </view>
+          </view>
+          <view class="info-grid">
+            <view wx:for="{{infoRows}}" wx:key="label" class="info-row">
+              <text class="info-label">{{item.label}}</text>
+              <text class="info-value">{{item.value}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 5 段内容 -->
+        <view class="card tab-card">
+          <view class="act-tabs">
+            <view
+              wx:for="{{tabs}}"
+              wx:key="key"
+              class="act-tab {{activeTab === item.key ? 'is-active' : ''}}"
+              data-key="{{item.key}}"
+              bindtap="onTabTap"
+            >{{item.label}}</view>
+          </view>
+
+          <view wx:if="{{activeTab === 'points'}}" class="tab-body fade-in">
+            <view class="kp-list">
+              <view wx:for="{{keyPoints}}" wx:key="*this" class="kp-item">
+                <text class="kp-dot"></text>
+                <text class="kp-text">{{item}}</text>
+              </view>
+            </view>
+            <view wx:if="{{breathing}}" class="tip-block">
+              <text class="tip-block-icon">🌬️</text>
+              <view class="tip-block-main">
+                <view class="tip-block-title">呼吸节奏</view>
+                <view class="tip-block-text">{{breathing}}</view>
+              </view>
+            </view>
+            <view wx:if="{{safetyNote}}" class="tip-block tip-block--warn">
+              <text class="tip-block-icon">🛡️</text>
+              <view class="tip-block-main">
+                <view class="tip-block-title">安全提示</view>
+                <view class="tip-block-text">{{safetyNote}}</view>
+              </view>
+            </view>
+            <view wx:if="{{keyPoints.length === 0}}" class="tab-empty">暂无动作要点</view>
+          </view>
+
+          <view wx:elif="{{activeTab === 'steps'}}" class="tab-body fade-in">
+            <view wx:for="{{steps}}" wx:key="no" class="step-item">
+              <view class="step-no">{{item.no}}</view>
+              <view class="step-main">
+                <text class="step-text">{{item.text}}</text>
+                <view wx:if="{{index < steps.length - 1}}" class="step-line"></view>
+              </view>
+            </view>
+            <view wx:if="{{steps.length === 0}}" class="tab-empty">暂无步骤说明</view>
+          </view>
+
+          <view wx:elif="{{activeTab === 'errors'}}" class="tab-body fade-in">
+            <view wx:for="{{errors}}" wx:key="wrong" class="err-item">
+              <view class="err-row">
+                <text class="err-tag err-tag--wrong">易错</text>
+                <text class="err-text">{{item.wrong}}</text>
+              </view>
+              <view class="err-row">
+                <text class="err-tag err-tag--fix">纠正</text>
+                <text class="err-text">{{item.fix}}</text>
+              </view>
+            </view>
+            <view wx:if="{{errors.length === 0}}" class="tab-empty">暂无常见错误记录</view>
+          </view>
+
+          <view wx:elif="{{activeTab === 'compare'}}" class="tab-body fade-in">
+            <view class="cmp-head">
+              <text class="cmp-aspect">对比项</text>
+              <text class="cmp-col cmp-col--correct">正确</text>
+              <text class="cmp-col cmp-col--wrong">错误</text>
+            </view>
+            <view wx:for="{{compares}}" wx:key="aspect" class="cmp-row">
+              <text class="cmp-aspect">{{item.aspect}}</text>
+              <text class="cmp-col cmp-col--correct">{{item.correct}}</text>
+              <text class="cmp-col cmp-col--wrong">{{item.wrong}}</text>
+            </view>
+            <view wx:if="{{compares.length === 0}}" class="tab-empty">暂无正误对比</view>
+          </view>
+
+          <view wx:elif="{{activeTab === 'alternatives'}}" class="tab-body fade-in">
+            <block wx:if="{{alternatives.length}}">
+              <view
+                wx:for="{{alternatives}}"
+                wx:key="action_id"
+                class="alt-item"
+                data-id="{{item.action_id}}"
+                bindtap="onGotoAlternative"
+              >
+                <view
+                  class="alt-type {{item.type === 'regression' ? 'alt-type--reg' : 'alt-type--pro'}}"
+                >{{item.typeLabel}}</view>
+                <view class="alt-main">
+                  <view class="alt-name">{{item.name}}</view>
+                  <view class="alt-sub">{{item.levelLabel}} · 点击查看示范</view>
+                </view>
+                <text class="alt-arrow">›</text>
+              </view>
+            </block>
+            <empty-state
+              wx:else
+              icon="🔁"
+              title="暂无替代动作"
+              desc="该动作暂未配置降阶/进阶动作，按当前组次完成即可"
+              action-text="返回计划"
+              bindaction="onBack"
+            ></empty-state>
+          </view>
+        </view>
+
+        <view class="bottom-placeholder"></view>
+      </block>
+    </state-view>
+
+    <!-- 错误态出口：返回计划 -->
+    <view wx:if="{{viewState === 'error'}}" class="error-back">
+      <view class="btn btn-ghost btn-block" bindtap="onBack">返回计划</view>
+    </view>
+  </view>
+
+  <!-- 底部吸底操作栏 -->
+  <view wx:if="{{viewState === 'done' && action}}" class="bottom-bar">
+    <view class="btn-row">
+      <view class="btn btn-ghost" bindtap="onBack">返回计划</view>
+      <view class="btn btn-primary" bindtap="onGoCheckin">去打卡</view>
+    </view>
+  </view>
+</view>

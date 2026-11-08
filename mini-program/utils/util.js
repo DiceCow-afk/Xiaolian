@@ -88,7 +88,9 @@ function dateRangeText(start, end) {
   const s = new Date(start);
   const e = new Date(end);
   if (isNaN(s.getTime()) || isNaN(e.getTime())) return '';
-  return s.getMonth() + 1 + '月' + s.getDate() + '日 - ' + e.getMonth() + 1 + '月' + e.getDate() + '日';
+  return (
+    (s.getMonth() + 1) + '月' + s.getDate() + '日 - ' + (e.getMonth() + 1) + '月' + e.getDate() + '日'
+  );
 }
 
 /** 秒数格式化为 4'10" */

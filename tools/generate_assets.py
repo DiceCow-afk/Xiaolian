@@ -85,6 +85,8 @@ FORE_ARM = 58
 
 LIMB_OUTER = 16
 LIMB_INNER = 10
+FAR_LIMB_OUTER = 14
+FAR_LIMB_INNER = 8
 TORSO_OUTER = 40
 TORSO_INNER = 32
 SHOE_WIDTH = 19
@@ -105,14 +107,14 @@ def hex_rgba(value: str, alpha: int = 255) -> tuple:
 
 INK = hex_rgba("172033")             # 深色（描边 / 头部 / 鞋）
 ORANGE = hex_rgba("FF6B2C")          # 主色（运动服）
-ORANGE_DEEP = hex_rgba("D8561E")     # 远侧肢体（同色系加深，做层次）
+ORANGE_DEEP = hex_rgba("C24C1A")     # 远侧肢体（同色系加深，做层次）
 GRAY = hex_rgba("8A94A6")
 BLUE = hex_rgba("2F5BEA")
 GREEN = hex_rgba("12B76A")
 BG = hex_rgba("F4F6FA")
 WHITE = (255, 255, 255, 255)
 PANEL = (255, 255, 255, 255)
-WALL = hex_rgba("D9DFE8")
+WALL = hex_rgba("CBD3DF")
 SHADOW = (138, 148, 166, 72)
 ARROW = hex_rgba("3F69E6")
 COVER_BG = INK
@@ -210,6 +212,17 @@ def quad_bezier(p0, c, p1, steps: int = 40):
         mt = 1.0 - t
         x = mt * mt * p0[0] + 2 * mt * t * c[0] + t * t * p1[0]
         y = mt * mt * p0[1] + 2 * mt * t * c[1] + t * t * p1[1]
+        pts.append((x, y))
+    return pts
+
+
+def cubic_bezier(p0, c1, c2, p1, steps: int = 24):
+    pts = []
+    for i in range(steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        x = (mt ** 3) * p0[0] + 3 * mt * mt * t * c1[0] + 3 * mt * t * t * c2[0] + (t ** 3) * p1[0]
+        y = (mt ** 3) * p0[1] + 3 * mt * mt * t * c1[1] + 3 * mt * t * t * c2[1] + (t ** 3) * p1[1]
         pts.append((x, y))
     return pts
 
@@ -407,12 +420,15 @@ def build_icons() -> list:
 # 2) 动作关键帧（480x480，透明底火柴人）
 # ===========================================================================
 def pose(view, pelvis, torso_deg, head_deg, ankles, wrists, toes,
-         knee=None, elbow=None, arrows=(), shift=(0, 0), wall_x=None):
+         knee=None, elbow=None, arrows=(), shift=(0, 0), wall_x=None,
+         arms=None):
     neck, head = body_points(pelvis, torso_deg, head_deg)
     if knee is None:
         knee = {"L": (1, 0), "R": (1, 0)} if view == "side" else {"L": (-1, 0), "R": (1, 0)}
     if elbow is None:
         elbow = {"L": (-1, 0), "R": (-1, 0)} if view == "side" else {"L": (-1, 0), "R": (1, 0)}
+    if arms is None:
+        arms = "near" if view == "side" else "both"
     return {
         "view": view,
         "pelvis": pelvis,
@@ -426,6 +442,7 @@ def pose(view, pelvis, torso_deg, head_deg, ankles, wrists, toes,
         "arrows": list(arrows),
         "shift": shift,
         "wall_x": wall_x,
+        "arms": arms,
     }
 
 
@@ -453,37 +470,42 @@ def validate_pose(name: str, p: dict) -> None:
 
 
 # ---------------------------- 深蹲 / squat ----------------------------
+SQUAT_SHIFT = (-18, 0)
 SQUAT_POSES = [
     # 1 站姿
     pose("side", (240, 286), 5, 5,
          ankles={"L": (250, 424), "R": (238, 424)},
-         wrists={"L": (256, 294), "R": (238, 292)},
+         wrists={"L": (252, 312), "R": (234, 310)},
          toes={"L": (278, 430), "R": (266, 430)},
-         arrows=[arrow((172, 286), (146, 316), (166, 352))]),
+         arrows=[arrow((172, 286), (146, 316), (166, 352))],
+         shift=SQUAT_SHIFT),
     # 2 半蹲（下蹲）
     pose("side", (222, 316), 20, 20,
          ankles={"L": (250, 424), "R": (238, 424)},
-         wrists={"L": (330, 256), "R": (312, 250)},
+         wrists={"L": (378, 258), "R": (360, 252)},
          toes={"L": (278, 430), "R": (266, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (0, 1), "R": (0, 1)},
-         arrows=[arrow((168, 300), (140, 340), (163, 380))]),
+         arrows=[arrow((168, 300), (140, 340), (163, 380))],
+         shift=SQUAT_SHIFT),
     # 3 蹲到底
     pose("side", (206, 344), 30, 30,
          ankles={"L": (250, 424), "R": (238, 424)},
-         wrists={"L": (344, 272), "R": (328, 266)},
+         wrists={"L": (384, 279), "R": (366, 273)},
          toes={"L": (278, 430), "R": (266, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (0, 1), "R": (0, 1)},
-         arrows=[arrow((172, 322), (146, 360), (168, 398))]),
+         arrows=[arrow((172, 322), (146, 360), (168, 398))],
+         shift=SQUAT_SHIFT),
     # 4 站起（回到半程，箭头向上）
     pose("side", (226, 300), 15, 15,
          ankles={"L": (250, 424), "R": (238, 424)},
-         wrists={"L": (322, 248), "R": (308, 244)},
+         wrists={"L": (376, 246), "R": (358, 240)},
          toes={"L": (278, 430), "R": (266, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (0, 1), "R": (0, 1)},
-         arrows=[arrow((168, 392), (150, 350), (170, 306))]),
+         arrows=[arrow((168, 392), (150, 350), (170, 306))],
+         shift=SQUAT_SHIFT),
 ]
 
 # ---------------------------- 平板支撑 / plank ----------------------------
@@ -492,7 +514,7 @@ PLANK_POSES = [
     # 1 跪姿撑地（起始）
     pose("side", (215, 360), 56.7, 56.7,
          ankles={"L": (120, 420), "R": (104, 420)},
-         wrists={"L": (312, 424), "R": (296, 424)},
+         wrists={"L": (312, 432), "R": (294, 432)},
          toes={"L": (98, 428), "R": (82, 428)},
          knee={"L": (0, 1), "R": (0, 1)},
          elbow={"L": (1, 0), "R": (1, 0)},
@@ -501,29 +523,29 @@ PLANK_POSES = [
     # 2 一腿后伸、一膝着地（过渡）
     pose("side", (212, 352), 59.4, 59.4,
          ankles={"L": (80, 380), "R": (110, 418)},
-         wrists={"L": (312, 424), "R": (296, 424)},
+         wrists={"L": (312, 428), "R": (294, 428)},
          toes={"L": (60, 390), "R": (88, 426)},
          knee={"L": (0, 1), "R": (0, 1)},
          elbow={"L": (1, 0), "R": (1, 0)},
          arrows=[arrow((170, 290), (120, 300), (80, 315))],
          shift=PLANK_SHIFT),
-    # 3 双腿后伸、髋部偏高
+    # 3 双腿后伸、髋部抬高
     pose("side", (205, 330), 70.3, 70.3,
          ankles={"L": (107, 424), "R": (91, 424)},
-         wrists={"L": (314, 424), "R": (298, 424)},
+         wrists={"L": (312, 424), "R": (294, 424)},
          toes={"L": (85, 430), "R": (69, 430)},
          knee={"L": (0, 1), "R": (0, 1)},
          elbow={"L": (1, 0), "R": (1, 0)},
-         arrows=[arrow((165, 240), (185, 275), (215, 300))],
+         arrows=[arrow((195, 318), (215, 286), (236, 256))],
          shift=PLANK_SHIFT),
-    # 4 标准平板（身体一条线，保持）
+    # 4 标准平板（髋部下沉放平，保持）
     pose("side", (211, 354), 60.7, 60.7,
          ankles={"L": (95, 424), "R": (79, 424)},
-         wrists={"L": (312, 424), "R": (296, 424)},
+         wrists={"L": (312, 432), "R": (294, 432)},
          toes={"L": (73, 430), "R": (57, 430)},
          knee={"L": (0, 1), "R": (0, 1)},
          elbow={"L": (1, 0), "R": (1, 0)},
-         arrows=[arrow((140, 250), (200, 244), (280, 252))],
+         arrows=[arrow((150, 280), (170, 315), (200, 338))],
          shift=PLANK_SHIFT),
 ]
 
@@ -539,7 +561,7 @@ GLUTE_BRIDGE_POSES = [
          knee={"L": (0, -1), "R": (0, -1)},
          elbow=GB_ARMS,
          arrows=[arrow((160, 350), (145, 315), (165, 280))],
-         shift=GB_SHIFT),
+         shift=GB_SHIFT, arms="none"),
     # 2 髋部抬离地面
     pose("side", (209, 367), 107.7, 84,
          ankles={"L": (158, 424), "R": (142, 424)},
@@ -548,7 +570,7 @@ GLUTE_BRIDGE_POSES = [
          knee={"L": (0, -1), "R": (0, -1)},
          elbow=GB_ARMS,
          arrows=[arrow((150, 340), (135, 305), (155, 270))],
-         shift=GB_SHIFT),
+         shift=GB_SHIFT, arms="none"),
     # 3 髋部继续抬高
     pose("side", (218, 347), 119.1, 82.9,
          ankles={"L": (158, 424), "R": (142, 424)},
@@ -557,7 +579,7 @@ GLUTE_BRIDGE_POSES = [
          knee={"L": (0, -1), "R": (0, -1)},
          elbow=GB_ARMS,
          arrows=[arrow((145, 320), (130, 285), (150, 250))],
-         shift=GB_SHIFT),
+         shift=GB_SHIFT, arms="none"),
     # 4 顶峰（肩-髋-膝成一线）
     pose("side", (228, 332), 128.5, 81.2,
          ankles={"L": (158, 424), "R": (142, 424)},
@@ -566,19 +588,21 @@ GLUTE_BRIDGE_POSES = [
          knee={"L": (0, -1), "R": (0, -1)},
          elbow=GB_ARMS,
          arrows=[arrow((210, 290), (200, 255), (225, 220))],
-         shift=GB_SHIFT),
+         shift=GB_SHIFT, arms="none"),
 ]
 
 # ---------------------------- 高抬腿 / high_knees ----------------------------
+HIGH_KNEES_SHIFT = (-22, 0)
 HIGH_KNEES_POSES = [
     # 1 近侧膝高抬、远侧支撑
     pose("side", (240, 286), 8, 8,
          ankles={"L": (306, 318), "R": (246, 424)},
-         wrists={"L": (222, 282), "R": (296, 246)},
+         wrists={"L": (222, 282), "R": (306, 234)},
          toes={"L": (328, 326), "R": (272, 430)},
          knee={"L": (0, -1), "R": (1, 0)},
          elbow={"L": (-1, 0), "R": (1, 0)},
-         arrows=[arrow((340, 340), (355, 305), (340, 270))]),
+         arrows=[arrow((340, 340), (355, 305), (340, 270))],
+         shift=HIGH_KNEES_SHIFT),
     # 2 过渡：近腿落下、远腿抬起
     pose("side", (240, 288), 8, 8,
          ankles={"L": (272, 424), "R": (238, 380)},
@@ -586,7 +610,8 @@ HIGH_KNEES_POSES = [
          toes={"L": (296, 428), "R": (260, 386)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (1, 0), "R": (-1, 0)},
-         arrows=[arrow((330, 360), (345, 330), (330, 295))]),
+         arrows=[arrow((330, 360), (345, 330), (330, 295))],
+         shift=HIGH_KNEES_SHIFT),
     # 3 远侧膝高抬、近侧支撑
     pose("side", (240, 286), 8, 8,
          ankles={"L": (252, 424), "R": (288, 318)},
@@ -594,7 +619,8 @@ HIGH_KNEES_POSES = [
          toes={"L": (276, 430), "R": (310, 326)},
          knee={"L": (1, 0), "R": (0, -1)},
          elbow={"L": (1, 0), "R": (-1, 0)},
-         arrows=[arrow((330, 340), (348, 305), (335, 268))]),
+         arrows=[arrow((330, 340), (348, 305), (335, 268))],
+         shift=HIGH_KNEES_SHIFT),
     # 4 过渡：远腿落下、近腿抬起（回落）
     pose("side", (240, 288), 8, 8,
          ankles={"L": (270, 370), "R": (242, 424)},
@@ -602,7 +628,8 @@ HIGH_KNEES_POSES = [
          toes={"L": (276, 388), "R": (266, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (1, 0), "R": (-1, 0)},
-         arrows=[arrow((335, 290), (350, 320), (335, 350))]),
+         arrows=[arrow((335, 290), (350, 320), (335, 350))],
+         shift=HIGH_KNEES_SHIFT),
 ]
 
 # ---------------------------- 开合跳 / jumping_jack ----------------------------
@@ -610,7 +637,7 @@ JUMPING_JACK_POSES = [
     # 1 站直、双臂下垂、双脚并拢
     pose("front", (240, 286), 0, 0,
          ankles={"L": (226, 424), "R": (254, 424)},
-         wrists={"L": (198, 300), "R": (282, 300)},
+         wrists={"L": (198, 312), "R": (282, 312)},
          toes={"L": (218, 432), "R": (262, 432)},
          knee={"L": (-1, 0), "R": (1, 0)},
          elbow={"L": (-1, 0), "R": (1, 0)},
@@ -647,7 +674,7 @@ WALL_SIT_POSES = [
     # 1 靠墙站立
     pose("side", (190, 286), 0, 0,
          ankles={"L": (226, 424), "R": (210, 424)},
-         wrists={"L": (206, 296), "R": (188, 294)},
+         wrists={"L": (206, 310), "R": (188, 308)},
          toes={"L": (252, 430), "R": (236, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (-1, 0), "R": (-1, 0)},
@@ -656,7 +683,7 @@ WALL_SIT_POSES = [
     # 2 贴墙下滑（半程）
     pose("side", (190, 330), 0, 0,
          ankles={"L": (252, 424), "R": (240, 424)},
-         wrists={"L": (262, 258), "R": (246, 254)},
+         wrists={"L": (316, 252), "R": (300, 248)},
          toes={"L": (278, 430), "R": (266, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (0, 1), "R": (0, 1)},
@@ -665,7 +692,7 @@ WALL_SIT_POSES = [
     # 3 大腿平行地面（静蹲位置）
     pose("side", (190, 352), 0, 0,
          ankles={"L": (284, 424), "R": (272, 424)},
-         wrists={"L": (280, 266), "R": (264, 262)},
+         wrists={"L": (316, 268), "R": (300, 264)},
          toes={"L": (310, 430), "R": (298, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (0, 1), "R": (0, 1)},
@@ -674,7 +701,7 @@ WALL_SIT_POSES = [
     # 4 起身至半程
     pose("side", (190, 336), 0, 0,
          ankles={"L": (262, 424), "R": (250, 424)},
-         wrists={"L": (268, 272), "R": (252, 268)},
+         wrists={"L": (312, 258), "R": (296, 254)},
          toes={"L": (288, 430), "R": (276, 430)},
          knee={"L": (1, 0), "R": (1, 0)},
          elbow={"L": (0, 1), "R": (0, 1)},
@@ -728,7 +755,7 @@ def render_frame(p: dict) -> Image.Image:
     # --- 靠墙静蹲的墙 ---
     if p.get("wall_x") is not None:
         wx = p["wall_x"] + sx
-        line_round(d, [T((wx, 108)), T((wx, 424))], WALL, w(9))
+        line_round(d, [T((wx, 92)), T((wx, 430))], WALL, w(10))
 
     view = p["view"]
     hips, shoulders = _hips_shoulders(view, p["pelvis"], p["neck"])
@@ -743,17 +770,22 @@ def render_frame(p: dict) -> Image.Image:
         for side in ("L", "R")
     }
 
-    def draw_leg(side, inner_color):
+    def draw_leg(side, inner_color, far=False):
+        outer = FAR_LIMB_OUTER if far else LIMB_OUTER
+        inner = FAR_LIMB_INNER if far else LIMB_INNER
         chain = [hips[side], knees[side], p["ankles"][side]]
-        line_round(d, [T(pt) for pt in chain], INK, w(LIMB_OUTER))
-        line_round(d, [T(pt) for pt in chain], inner_color, w(LIMB_INNER))
+        line_round(d, [T(pt) for pt in chain], INK, w(outer))
+        line_round(d, [T(pt) for pt in chain], inner_color, w(inner))
         # 深色运动鞋
-        line_round(d, [T(p["ankles"][side]), T(p["toes"][side])], INK, w(SHOE_WIDTH))
+        shoe_w = SHOE_WIDTH - 2 if far else SHOE_WIDTH
+        line_round(d, [T(p["ankles"][side]), T(p["toes"][side])], INK, w(shoe_w))
 
-    def draw_arm(side, inner_color):
+    def draw_arm(side, inner_color, far=False):
+        outer = FAR_LIMB_OUTER if far else LIMB_OUTER
+        inner = FAR_LIMB_INNER if far else LIMB_INNER
         chain = [shoulders[side], elbows[side], p["wrists"][side]]
-        line_round(d, [T(pt) for pt in chain], INK, w(LIMB_OUTER))
-        line_round(d, [T(pt) for pt in chain], inner_color, w(LIMB_INNER))
+        line_round(d, [T(pt) for pt in chain], INK, w(outer))
+        line_round(d, [T(pt) for pt in chain], inner_color, w(inner))
 
     def draw_torso():
         line_round(d, [T(p["neck"]), T(p["pelvis"])], INK, w(TORSO_OUTER))
@@ -763,29 +795,34 @@ def render_frame(p: dict) -> Image.Image:
         hx, hy = T(p["head"])
         r = HEAD_R * S
         d.ellipse([hx - r, hy - r, hx + r, hy + r], fill=INK)
-        # 橙色运动头带（保持在头部圆内）
-        band_top = hy - r * 0.58
-        band_h = r * 0.30
-        half_x = r * 0.80
+        # 橙色运动头带（保持在头部圆内，位置略高、线条更窄更像发带）
+        band_top = hy - r * 0.74
+        band_h = r * 0.22
+        half_x = r * 0.60
         d.rounded_rectangle(
             [hx - half_x, band_top, hx + half_x, band_top + band_h],
             radius=band_h * 0.5,
             fill=ORANGE,
         )
 
+    arm_plan = p.get("arms", "both" if view == "front" else "near")
     if view == "side":
-        draw_leg("R", ORANGE_DEEP)      # 远侧腿
-        draw_arm("R", ORANGE_DEEP)      # 远侧手臂
+        draw_leg("R", ORANGE_DEEP, far=True)   # 远侧腿
+        if arm_plan == "both":
+            draw_arm("R", ORANGE_DEEP, far=True)  # 远侧手臂
         draw_torso()
-        draw_leg("L", ORANGE)           # 近侧腿
-        draw_arm("L", ORANGE)           # 近侧手臂
+        draw_leg("L", ORANGE)                  # 近侧腿
+        if arm_plan in ("near", "both"):
+            draw_arm("L", ORANGE)              # 近侧手臂
         draw_head()
     else:
         draw_leg("L", ORANGE)
         draw_leg("R", ORANGE)
         draw_torso()
-        draw_arm("L", ORANGE)
-        draw_arm("R", ORANGE)
+        if arm_plan in ("near", "both"):
+            draw_arm("L", ORANGE)
+        if arm_plan == "both":
+            draw_arm("R", ORANGE)
         draw_head()
 
     for spec in p["arrows"]:
@@ -840,10 +877,15 @@ def build_placeholder() -> list:
         outline=(228, 234, 243, 255),
         width=max(1, int(round(2 * S))),
     )
-    # 人物剪影：头 + 颈 + 肩胸
-    d.ellipse([P(204, 120), P(276, 192)], fill=SILHOUETTE)
-    d.rounded_rectangle([P(222, 178), P(258, 240)], radius=17 * S, fill=SILHOUETTE)
-    d.rounded_rectangle([P(158, 224), P(322, 336)], radius=64 * S, fill=SILHOUETTE)
+    # 人物剪影：头 + 颈 + 肩胸（圆弧肩线，避免"方块"感）
+    d.ellipse([P(204, 116), P(276, 188)], fill=SILHOUETTE)
+    d.rounded_rectangle([P(222, 178), P(258, 246)], radius=17 * S, fill=SILHOUETTE)
+    shoulder_pts = []
+    shoulder_pts += cubic_bezier((150, 340), (150, 288), (176, 244), (216, 238), 22)
+    shoulder_pts += quad_bezier((216, 238), (240, 230), (264, 238), 10)
+    shoulder_pts += cubic_bezier((264, 238), (304, 244), (330, 288), (330, 340), 22)
+    shoulder_pts += [(150, 340)]
+    d.polygon([P(x, y) for x, y in shoulder_pts], fill=SILHOUETTE)
     # 三点提示：彩色圆点 + 浅灰短横线
     bullet_colors = [ORANGE, GREEN, BLUE]
     bullet_widths = [190, 158, 210]
@@ -1165,10 +1207,10 @@ def build_preview(icon_entries: list, frame_entries: list,
     for i, (filename, rel, cn, state_text) in enumerate(icons):
         cxx = start_x + i * cell_w + cell_w // 2
         im = Image.open(ROOT / "mini-program" / rel).convert("RGBA")
-        im = resize_rgba(im, (108 * S, 108 * S))
-        img.alpha_composite(im, ((cxx - 54) * S, 158 * S))
-        txt(cxx, 274, "%s · %s" % (cn, state_text), 13, INK, True, anchor="ma")
-        txt(cxx, 292 - 4, filename, 10, GRAY, False, anchor="ma")
+        im = resize_rgba(im, (100 * S, 100 * S))
+        img.alpha_composite(im, ((cxx - 50) * S, 153 * S))
+        txt(cxx, 261, "%s · %s" % (cn, state_text), 13, INK, True, anchor="ma")
+        txt(cxx, 276, filename, 10, GRAY, False, anchor="ma")
 
     # 02 动作关键帧
     rr((40, 310, 1560, 952), 20, fill=PANEL)
@@ -1177,7 +1219,6 @@ def build_preview(icon_entries: list, frame_entries: list,
         "02  Exercise keyframes  ·  480x480  ·  6 exercises x 4 frames  ·  dark outline + orange kit + motion arrow + floor shadow",
     ), 17, INK, True)
     frame_size = 145
-    block_w = 720
     for row in range(3):
         row_y = 372 + row * 188
         for block in range(2):
@@ -1195,31 +1236,33 @@ def build_preview(icon_entries: list, frame_entries: list,
                 im = Image.open(ROOT / rel).convert("RGBA")
                 im = resize_rgba(im, (frame_size * S, frame_size * S))
                 img.alpha_composite(im, (fx * S, (row_y + 4) * S))
-                # 帧底板 + 描边，便于在白色面板上分辨透明边界
-                img_frame_box = None  # noqa: F841  (占位说明：透明底直接贴，无需底板)
                 txt(fx + frame_size // 2, row_y + 152, str(i + 1), 12, GRAY, False, anchor="ma")
 
     # 03 占位图与分享封面
     rr((40, 972, 1560, 1140), 20, fill=PANEL)
-    txt(68, 990, label("03  占位图与分享封面", "03  Placeholder & share cover"), 17, INK, True)
-    paste_sized(placeholder_entry["path"], (68, 1012), (100, 100))
-    txt(182, 1024, "placeholder.png", 14, INK, True)
-    txt(182, 1046, label("480×480 · 暂无视频时以图文要点占位（人物剪影 + 三点提示）",
+    txt(68, 988, label("03  占位图与分享封面", "03  Placeholder & share cover"), 17, INK, True)
+    paste_sized(placeholder_entry["path"], (68, 1012), (108, 108))
+    txt(190, 1022, "placeholder.png", 14, INK, True)
+    txt(190, 1044, label("480×480 · 暂无视频时以图文要点占位（人物剪影 + 三点提示）",
                          "480x480 · placeholder for text/image key points (silhouette + 3 bullets)"),
         12, GRAY, False)
-    paste_sized(cover_entry["path"], (720, 1012), (126, 100))
-    txt(862, 1024, "share-cover.png", 14, INK, True)
-    txt(862, 1046, label("500×400 · 分享卡片品牌封面（含「校练 / XIAOLIAN」）",
+    txt(190, 1066, label("用于动作详情页无视频时的图文要点展示", "Used when no demo video is available"),
+        12, GRAY, False)
+    paste_sized(cover_entry["path"], (700, 1012), (135, 108))
+    txt(852, 1022, "share-cover.png", 14, INK, True)
+    txt(852, 1044, label("500×400 · 分享卡片品牌封面（含「校练 / XIAOLIAN」）",
                          "500x400 · brand share cover (Xiaolian / XIAOLIAN)"),
         12, GRAY, False)
-    total_kb = preview_entry_placeholder["totalPngKB"]
-    txt(1180, 1024, label("共 %d 个 PNG 素材" % preview_entry_placeholder["pngFiles"],
-                          "%d PNG files" % preview_entry_placeholder["pngFiles"]),
-        13, INK, True)
-    txt(1180, 1046, label("PNG 压缩优化 · 合计约 %.1f KB（上限 2048 KB）" % total_kb,
-                          "PNG optimized · about %.1f KB (limit 2048 KB)" % total_kb),
+    txt(852, 1066, label("深色底 + 主色橙圆 + 白色运动人物", "Dark base + orange circle + white athlete"),
         12, GRAY, False)
-    txt(1180, 1068, label("脚本幂等，可重复运行覆盖", "Script is idempotent / re-runnable"),
+    assets_kb = preview_entry_placeholder["assetsKB"]
+    assets_count = preview_entry_placeholder["assetsCount"]
+    txt(1170, 1022, label("小程序素材：%d 个 PNG" % assets_count, "%d asset PNG files" % assets_count),
+        13, INK, True)
+    txt(1170, 1044, label("合计约 %.1f KB（上限 2048 KB）" % assets_kb,
+                          "about %.1f KB (limit 2048 KB)" % assets_kb),
+        12, GRAY, False)
+    txt(1170, 1066, label("脚本幂等，可重复运行覆盖", "Script is idempotent / re-runnable"),
         12, GRAY, False)
 
     txt(44, 1150, label(
@@ -1268,8 +1311,8 @@ def main() -> int:
 
     png_bytes = sum(entry["bytes"] for entry in records) if not errors else 0
     summary_for_preview = {
-        "totalPngKB": round(png_bytes / 1024.0, 1),
-        "pngFiles": len(records) + 1,  # + 预览图
+        "assetsKB": round(png_bytes / 1024.0, 1),
+        "assetsCount": len(records),
     }
 
     preview_entry = build_preview(

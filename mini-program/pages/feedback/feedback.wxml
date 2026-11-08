@@ -1,0 +1,278 @@
+<view class="page page--feedback">
+  <state-view
+    state="{{viewState}}"
+    text="{{errorText}}"
+    min-height="70vh"
+    bindretry="onRetry"
+  >
+    <block wx:if="{{planSummary}}">
+      <!-- ================= Hero ================= -->
+      <view class="hero hero-blue">
+        <view class="hero-deco hero-deco-1"></view>
+        <view class="hero-deco hero-deco-2"></view>
+        <text class="hero-kicker">{{heroKicker}}</text>
+        <view class="hero-title">让计划跟着你的身体调整</view>
+        <view class="hero-sub">完成度、RPE、不适反馈 → 预设规则分支，不由大模型决定训练内容</view>
+        <view class="hero-meta">
+          <view class="hero-meta-item">
+            <text class="hero-meta-value">{{completionPercent}}%</text>
+            <text class="hero-meta-label">完成率</text>
+          </view>
+          <view class="hero-meta-item">
+            <text class="hero-meta-value">{{avgRpeText}}</text>
+            <text class="hero-meta-label">平均 RPE</text>
+          </view>
+          <view class="hero-meta-item">
+            <text class="hero-meta-value">{{discomfortCountText}}</text>
+            <text class="hero-meta-label">不适次数</text>
+          </view>
+          <view class="hero-meta-item">
+            <text class="hero-meta-value">{{streak}}</text>
+            <text class="hero-meta-label">连续打卡</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="content">
+        <!-- ================= 周切换器 ================= -->
+        <view class="card week-switch-card">
+          <view class="week-tabs">
+            <view
+              wx:for="{{weekTabs}}"
+              wx:key="no"
+              class="week-tab {{item.no === weekNo ? 'is-active' : ''}}"
+              data-week="{{item.no}}"
+              bindtap="onWeekSwitch"
+            >
+              <text class="week-tab-label">{{item.label}}</text>
+              <text class="week-tab-status {{item.feedbacked ? 'is-done' : ''}}">
+                {{item.feedbacked ? '已反馈' : '待反馈'}}
+              </text>
+            </view>
+          </view>
+        </view>
+
+        <!-- ================= 本周统计卡 ================= -->
+        <view class="card stats-card">
+          <view class="card-hd">
+            <view class="flex-1">
+              <view class="card-title">本周数据</view>
+              <view class="card-sub">{{statsSubText}}</view>
+            </view>
+            <view class="rate-circle">{{completionPercent}}%</view>
+          </view>
+
+          <view class="progress mt-16">
+            <view class="progress-bar" style="width: {{completionPercent}}%;"></view>
+          </view>
+
+          <view class="stat-row mt-24">
+            <view class="stat">
+              <view class="stat-value">{{doneCount}}</view>
+              <view class="stat-label">完成</view>
+            </view>
+            <view class="stat">
+              <view class="stat-value">{{partialCount}}</view>
+              <view class="stat-label">部分</view>
+            </view>
+            <view class="stat">
+              <view class="stat-value">{{skippedCount}}</view>
+              <view class="stat-label">跳过</view>
+            </view>
+            <view class="stat">
+              <view class="stat-value">{{discomfortCount}}</view>
+              <view class="stat-label">不适</view>
+            </view>
+          </view>
+
+          <view class="rpe-line">
+            <text class="rpe-line-label">平均 RPE</text>
+            <text class="rpe-line-value">{{avgRpeText}}</text>
+            <text class="rpe-line-hint">主观用力程度 1-10，本周打卡的平均值</text>
+          </view>
+        </view>
+
+        <!-- ================= 调整结果卡（已提交周） ================= -->
+        <view wx:if="{{record && adjustment}}" id="result-card" class="card result-card fade-in">
+          <view class="result-hd">
+            <view
+              class="result-badge"
+              style="color: {{adjustmentMeta.color}}; background: {{adjustmentMeta.soft}};"
+            >{{adjustmentMeta.icon}} {{adjustment.label}}</view>
+            <view class="result-time">{{recordTimeText}} 提交</view>
+          </view>
+          <view class="result-rule">命中规则 <text class="rule-id">{{adjustment.rule_id}}</text>：{{adjustment.condition_text}}</view>
+          <view class="result-tag">预设规则分支，非大模型决策</view>
+          <view class="result-summary">{{adjustment.summary}}</view>
+
+          <view class="divider"></view>
+          <view class="result-section-title">下周预览</view>
+          <block wx:if="{{preview.available}}">
+            <view class="preview-meta">第 {{preview.nextWeekNo}} 周 · {{preview.phaseName}}</view>
+            <view class="preview-focus">{{preview.focus}}</view>
+            <view class="preview-list">
+              <plan-card
+                wx:for="{{preview.sessions}}"
+                wx:key="session_id"
+                session="{{item}}"
+                mode="compact"
+                show-status="{{false}}"
+                bindactiontap="onPreviewActionTap"
+              ></plan-card>
+            </view>
+          </block>
+          <view wx:else class="preview-empty">
+            {{preview.message || '本周期已到最后一周，建议安排体测复测或重新生成计划。'}}
+          </view>
+
+          <view class="divider"></view>
+          <view class="result-section-title">安全复查</view>
+          <view wx:if="{{preview.safetyChanges.length}}" class="safety-list">
+            <view
+              wx:for="{{preview.safetyChanges}}"
+              wx:key="changeId"
+              class="safety-change"
+            >
+              <text class="tag {{item.tagClass}}">{{item.typeLabel}}</text>
+              <view class="safety-change-body">
+                <view class="safety-change-action">{{item.from}} → {{item.to || '已移除'}}</view>
+                <view class="safety-change-reason">{{item.reason}}</view>
+              </view>
+            </view>
+          </view>
+          <view wx:else class="preview-empty">安全复查未发现需要替换的动作。</view>
+
+          <view class="btn-row mt-24">
+            <view class="btn btn-primary" bindtap="goPlan">查看下周计划</view>
+            <view class="btn btn-ghost" bindtap="onUpdateFeedback">更新反馈</view>
+          </view>
+        </view>
+
+        <!-- ================= 反馈表单卡 ================= -->
+        <view wx:if="{{formOpen}}" id="feedback-form" class="card form-card">
+          <view class="card-hd">
+            <view class="card-title">{{formTitle}}</view>
+            <text wx:if="{{record}}" class="form-collapse" bindtap="onCancelUpdate">收起</text>
+          </view>
+
+          <view class="form-item">
+            <view class="form-label">本周完成率<text class="required">*</text></view>
+            <block wx:if="{{hasCheckinRecords}}">
+              <view class="readonly-row">
+                <text class="readonly-value">{{completionPercent}}%</text>
+                <text class="readonly-hint">按本周打卡记录自动计算</text>
+              </view>
+            </block>
+            <block wx:else>
+              <tag-picker
+                options="{{completionOptions}}"
+                value="{{form.completionRate}}"
+                bindchange="onCompletionRateChange"
+              ></tag-picker>
+              <view class="form-hint">本周还没有打卡记录，可按估算值提交反馈。</view>
+            </block>
+            <view wx:if="{{formErrors.completion_rate}}" class="form-error">{{formErrors.completion_rate}}</view>
+          </view>
+
+          <view class="form-item">
+            <view class="form-label">平均 RPE<text class="required">*</text></view>
+            <rpe-slider value="{{form.avgRpe}}" bindchange="onRpeChange"></rpe-slider>
+            <view class="form-hint">{{rpeHint}}</view>
+            <view wx:if="{{formErrors.avg_rpe}}" class="form-error">{{formErrors.avg_rpe}}</view>
+          </view>
+
+          <view class="form-item">
+            <view class="form-label">整体感受<text class="required">*</text></view>
+            <tag-picker
+              options="{{feelOptions}}"
+              value="{{form.feel}}"
+              layout="cards"
+              bindchange="onFeelChange"
+            ></tag-picker>
+            <view wx:if="{{formErrors.feel}}" class="form-error">{{formErrors.feel}}</view>
+          </view>
+
+          <view class="form-item">
+            <view class="form-label">恢复情况<text class="required">*</text></view>
+            <tag-picker
+              options="{{recoveryOptions}}"
+              value="{{form.recovery}}"
+              bindchange="onRecoveryChange"
+            ></tag-picker>
+            <view class="form-hint">1 = 很差，5 = 很好；只看主观恢复，不做医疗判断。</view>
+            <view wx:if="{{formErrors.recovery}}" class="form-error">{{formErrors.recovery}}</view>
+          </view>
+
+          <view class="form-item">
+            <view class="form-label">本周是否有不适<text class="required">*</text></view>
+            <tag-picker
+              options="{{discomfortOptions}}"
+              value="{{form.hasDiscomfort}}"
+              bindchange="onDiscomfortChange"
+            ></tag-picker>
+            <view wx:if="{{discomfortFromCheckins}}" class="form-hint">本周打卡记录中出现过不适反馈，已自动选择「有不适」。</view>
+          </view>
+
+          <view class="form-item">
+            <view class="form-label">备注<text class="form-optional">选填 · 最多 120 字</text></view>
+            <textarea
+              class="textarea"
+              value="{{form.note}}"
+              maxlength="120"
+              placeholder="本周训练感受、睡眠恢复、伤病情况…"
+              placeholder-class="input-placeholder"
+              bindinput="onNoteInput"
+            ></textarea>
+            <view class="form-hint note-counter">{{noteLength}}/120</view>
+            <view wx:if="{{formErrors.note}}" class="form-error">{{formErrors.note}}</view>
+          </view>
+
+          <view
+            class="btn btn-primary btn-block {{submitting ? 'btn-disabled' : ''}}"
+            bindtap="onSubmitFeedback"
+          >{{submitting ? '正在生成调整方案…' : submitText}}</view>
+          <view class="form-hint submit-hint">提交后由预设规则表判定下周调整分支，大模型不参与训练内容决策。</view>
+        </view>
+
+        <!-- ================= 历史调整记录 ================= -->
+        <view class="card">
+          <view class="card-hd">
+            <view class="card-title">历史调整记录</view>
+            <view class="card-sub">{{historyItems.length}} 条</view>
+          </view>
+          <block wx:if="{{historyItems.length}}">
+            <view wx:for="{{historyItems}}" wx:key="feedback_id" class="history-row">
+              <view class="history-row-hd">
+                <text class="history-week">{{item.weekLabel}}</text>
+                <text
+                  class="history-type"
+                  style="color: {{item.color}}; background: {{item.soft}};"
+                >{{item.icon}} {{item.typeLabel}}</text>
+                <text class="history-rule">{{item.ruleId}}</text>
+                <text class="history-time">{{item.timeText}}</text>
+              </view>
+              <view class="history-summary">{{item.summary}}</view>
+            </view>
+          </block>
+          <view wx:else class="history-empty">
+            <text class="history-empty-icon">🧭</text>
+            <text class="history-empty-text">还没有提交过周反馈。提交后这里会记录每次命中的规则与调整摘要。</text>
+          </view>
+        </view>
+
+        <view class="safe-bottom"></view>
+      </view>
+    </block>
+
+    <!-- ================= 无计划空状态 ================= -->
+    <view wx:else class="empty-wrap">
+      <empty-state
+        icon="📊"
+        title="还没有训练计划"
+        desc="完成约束输入并生成计划后，才能按周提交反馈、触发下周动态调整。"
+        action-text="去填写约束"
+        bindaction="goConstraints"
+      ></empty-state>
+    </view>
+  </state-view>
+</view>

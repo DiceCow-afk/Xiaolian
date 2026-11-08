@@ -1,0 +1,326 @@
+<view class="page page--constraints">
+  <!-- ===================== Hero ===================== -->
+  <view class="hero hero-orange">
+    <view class="hero-deco hero-deco-1"></view>
+    <view class="hero-deco hero-deco-2"></view>
+    <view class="hero-deco hero-deco-3"></view>
+    <text class="hero-kicker">STEP 0 · 先定约束</text>
+    <view class="hero-title">先定约束，再谈计划</view>
+    <view class="hero-sub">校园里能用的器械、能挤出的时间、身体的小状况，都会作为硬约束参与计算</view>
+    <view class="hero-meta">
+      <view class="hero-meta-item">
+        <text class="hero-meta-value">4 周</text>
+        <text class="hero-meta-label">周期化</text>
+      </view>
+      <view class="hero-meta-item">
+        <text class="hero-meta-value">4 类</text>
+        <text class="hero-meta-label">硬过滤</text>
+      </view>
+      <view class="hero-meta-item">
+        <text class="hero-meta-value">安全</text>
+        <text class="hero-meta-label">优先</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="content">
+    <!-- 编辑模式提示条 -->
+    <view wx:if="{{editMode}}" class="edit-bar">
+      <view class="edit-bar-main">
+        <text class="edit-bar-title">修改约束后需要重新生成计划</text>
+        <text class="edit-bar-desc">保存后会按新约束重算 4 周安排</text>
+      </view>
+      <view class="edit-bar-btn" bindtap="onCancelEdit">返回计划</view>
+    </view>
+
+    <state-view
+      state="{{viewState}}"
+      text="{{errorText || loadingText}}"
+      error-title="约束数据加载失败"
+      retry-text="重新加载"
+      bindretry="loadProfile"
+    >
+      <view wx:if="{{coldTip}}" class="cold-tip">💡 {{coldTip}}</view>
+
+      <!-- 2001：当前约束组合下没有安全可用动作时的空态出口 -->
+      <view wx:if="{{planBlocked}}" class="card empty-card">
+        <empty-state
+          icon="🛡️"
+          title="当前组合没有安全可用的动作"
+          desc="器械或空间限制过窄时会出现这种情况，放宽任意一项后重新生成即可"
+          action-text="去调整器械 / 空间"
+          bindaction="onGoAdjustEquipment"
+        ></empty-state>
+      </view>
+
+      <!-- ============ AI 自然语言解析卡 ============ -->
+      <view class="card ai-card">
+        <view class="card-hd">
+          <view class="flex-1">
+            <view class="card-title">AI 一句话填表</view>
+            <view class="card-sub">用自然语言描述时间、场地、器械和身体情况，自动回填下方表单</view>
+          </view>
+          <view class="ai-badge">✨ AI</view>
+        </view>
+        <textarea
+          class="textarea ai-textarea mt-16"
+          value="{{parseText}}"
+          maxlength="300"
+          placeholder="例如：每周三次，每次 30 分钟，宿舍里只有弹力带，膝盖有点不舒服，想提升 1000 米成绩"
+          placeholder-class="input-placeholder"
+          bindinput="onParseInput"
+        ></textarea>
+        <view class="parse-tools">
+          <view class="parse-tools-left">
+            <text class="text-xs text-muted">{{parseChars}}/300</text>
+            <view class="chip chip-sm example-chip" bindtap="onUseExample">用示例</view>
+          </view>
+          <view
+            class="btn btn-sm btn-primary parse-btn {{parsing ? 'btn-disabled' : ''}}"
+            bindtap="onParse"
+          >
+            <view wx:if="{{parsing}}" class="btn-spin spin"></view>
+            <text>{{parsing ? '解析中…' : 'AI 帮我填'}}</text>
+          </view>
+        </view>
+        <view wx:if="{{parseError}}" class="form-error">{{parseError}}</view>
+        <view wx:if="{{parseResult}}" class="parse-result fade-in">
+          <text class="parse-result-icon">✅</text>
+          <view class="parse-result-main">
+            <text class="parse-result-title">已识别：{{parseResult.filled_text}}</text>
+            <text class="parse-result-sub">置信度 {{parseResult.confidence_text}} · 已自动回填并高亮，请核对</text>
+          </view>
+        </view>
+        <view wx:if="{{parseFailText}}" class="parse-fail">
+          <text class="parse-fail-icon">💡</text>
+          <view class="parse-fail-main">
+            <text class="parse-fail-title">{{parseFailText}}</text>
+            <text class="parse-fail-sub">不影响继续填写与提交，可手动完成下方表单</text>
+          </view>
+          <view class="parse-fail-close" bindtap="onDismissParseFail">×</view>
+        </view>
+      </view>
+
+      <!-- ============ 01 基本信息 ============ -->
+      <view class="card">
+        <view class="card-hd">
+          <view class="flex-1">
+            <view class="card-title">基本信息</view>
+            <view class="card-sub">用于确定体测项目口径与动作难度</view>
+          </view>
+          <text class="step-badge">01</text>
+        </view>
+
+        <view class="form-item mt-24 {{highlighted.gender ? 'form-item--hl' : ''}}" id="field-gender">
+          <view class="form-label">性别<text class="required">*</text></view>
+          <tag-picker
+            options="{{genderOptions}}"
+            value="{{form.gender}}"
+            bindchange="onGenderChange"
+          ></tag-picker>
+          <view wx:if="{{errors.gender}}" class="form-error">{{errors.gender}}</view>
+        </view>
+
+        <view class="form-item {{highlighted.self_level ? 'form-item--hl' : ''}}" id="field-self-level">
+          <view class="form-label">运动基础自评<text class="required">*</text></view>
+          <tag-picker
+            options="{{selfLevelOptions}}"
+            value="{{form.self_level}}"
+            layout="cards"
+            bindchange="onSelfLevelChange"
+          ></tag-picker>
+          <view wx:if="{{errors.self_level}}" class="form-error">{{errors.self_level}}</view>
+        </view>
+      </view>
+
+      <!-- ============ 02 体测目标 ============ -->
+      <view class="card">
+        <view class="card-hd">
+          <view class="flex-1">
+            <view class="card-title">体测目标</view>
+            <view class="card-sub">最多同时选择 3 项，便于安排针对性训练</view>
+          </view>
+          <text class="step-badge">02</text>
+        </view>
+
+        <view class="form-item mt-24 {{highlighted.target_events ? 'form-item--hl' : ''}}" id="field-events">
+          <view class="form-label">体测项目<text class="required">*</text><text class="form-optional">（1-3 项）</text></view>
+          <tag-picker
+            options="{{eventOptions}}"
+            value="{{form.target_events}}"
+            multiple="{{true}}"
+            max="{{3}}"
+            bindchange="onEventsChange"
+          ></tag-picker>
+          <view wx:if="{{errors.target_events}}" class="form-error">{{errors.target_events}}</view>
+
+          <view class="event-list">
+            <view wx:for="{{eventRows}}" wx:key="event_id" class="event-row fade-in">
+              <view class="event-hd">
+                <text class="event-name">{{item.name}}</text>
+                <text class="event-desc">{{item.full_name}}</text>
+              </view>
+              <tag-picker
+                options="{{tierOptions}}"
+                value="{{item.tier}}"
+                bindchange="onEventLevelChange"
+                data-event-id="{{item.event_id}}"
+              ></tag-picker>
+              <view wx:if="{{item.threshold}}" class="event-threshold">
+                当前档位「{{item.tier_name}}」参考：{{item.threshold}}
+              </view>
+              <view wx:else class="event-threshold event-threshold--empty">
+                提交前请选择该项目的当前档位
+              </view>
+              <view wx:if="{{item.error}}" class="form-error">{{item.error}}</view>
+            </view>
+          </view>
+          <view wx:if="{{!eventRows.length}}" class="form-hint">选择体测项目后，逐项选择当前档位；档位阈值会同步展示</view>
+        </view>
+
+        <view class="form-item {{highlighted.goal ? 'form-item--hl' : ''}}" id="field-goal">
+          <view class="form-label">训练目标<text class="required">*</text></view>
+          <tag-picker
+            options="{{goalOptions}}"
+            value="{{form.goal}}"
+            layout="cards"
+            bindchange="onGoalChange"
+          ></tag-picker>
+          <view wx:if="{{errors.goal}}" class="form-error">{{errors.goal}}</view>
+        </view>
+
+        <view class="form-item" id="field-date">
+          <view class="form-label">体测日期<text class="required">*</text></view>
+          <picker
+            mode="date"
+            value="{{form.test_date}}"
+            start="{{testDateMin}}"
+            end="{{testDateMax}}"
+            bindchange="onDateChange"
+          >
+            <view class="date-picker">
+              <view class="date-main">
+                <text class="date-value">{{form.test_date}}</text>
+                <text class="date-sub">{{testDateHint}}</text>
+              </view>
+              <view class="date-side">
+                <text class="date-days">D-{{daysToTest}}</text>
+                <text class="date-icon">📅</text>
+              </view>
+            </view>
+          </picker>
+          <view wx:if="{{errors.test_date}}" class="form-error">{{errors.test_date}}</view>
+        </view>
+      </view>
+
+      <!-- ============ 03 训练条件 ============ -->
+      <view class="card">
+        <view class="card-hd">
+          <view class="flex-1">
+            <view class="card-title">训练条件</view>
+            <view class="card-sub">器械与空间是硬过滤条件，不会生成用不了的训练</view>
+          </view>
+          <text class="step-badge">03</text>
+        </view>
+
+        <view class="form-item mt-24 {{highlighted.equipment ? 'form-item--hl' : ''}}" id="field-equipment">
+          <view class="form-label">可用器械<text class="required">*</text></view>
+          <tag-picker
+            options="{{equipmentOptions}}"
+            value="{{form.equipment}}"
+            multiple="{{true}}"
+            exclusive-value="none"
+            bindchange="onEquipmentChange"
+          ></tag-picker>
+          <view wx:if="{{errors.equipment}}" class="form-error">{{errors.equipment}}</view>
+        </view>
+
+        <view class="form-item {{highlighted.space ? 'form-item--hl' : ''}}" id="field-space">
+          <view class="form-label">主要训练空间<text class="required">*</text></view>
+          <tag-picker
+            options="{{spaceOptions}}"
+            value="{{form.space}}"
+            layout="cards"
+            bindchange="onSpaceChange"
+          ></tag-picker>
+          <view wx:if="{{errors.space}}" class="form-error">{{errors.space}}</view>
+        </view>
+
+        <view class="form-item {{highlighted.time_per_session ? 'form-item--hl' : ''}}" id="field-time">
+          <view class="form-label">单次训练时长<text class="required">*</text></view>
+          <tag-picker
+            options="{{timeOptions}}"
+            value="{{form.time_per_session}}"
+            layout="cards"
+            bindchange="onTimeChange"
+          ></tag-picker>
+          <view wx:if="{{errors.time_per_session}}" class="form-error">{{errors.time_per_session}}</view>
+        </view>
+
+        <view class="form-item {{highlighted.weekly_frequency ? 'form-item--hl' : ''}}" id="field-freq">
+          <view class="form-label">每周训练次数<text class="required">*</text></view>
+          <view class="freq-row">
+            <view class="freq-hint">
+              <text class="freq-hint-main">计划会按频次排训练日</text>
+              <text class="freq-hint-sub">可选 2-5 次，建议先保持能坚持的次数</text>
+            </view>
+            <stepper
+              value="{{form.weekly_frequency}}"
+              min="{{frequencyMin}}"
+              max="{{frequencyMax}}"
+              unit="次/周"
+              bindchange="onFreqChange"
+            ></stepper>
+          </view>
+          <view wx:if="{{errors.weekly_frequency}}" class="form-error">{{errors.weekly_frequency}}</view>
+        </view>
+      </view>
+
+      <!-- ============ 04 身体限制 ============ -->
+      <view class="card">
+        <view class="card-hd">
+          <view class="flex-1">
+            <view class="card-title">身体限制</view>
+            <view class="card-sub">有禁忌的动作会被拦截或替换为降阶动作</view>
+          </view>
+          <text class="step-badge">04</text>
+        </view>
+
+        <view class="form-item mt-24 {{highlighted.body_limits ? 'form-item--hl' : ''}}" id="field-limits">
+          <view class="form-label">当前身体限制<text class="required">*</text></view>
+          <tag-picker
+            options="{{bodyLimitOptions}}"
+            value="{{form.body_limits}}"
+            multiple="{{true}}"
+            exclusive-value="none"
+            bindchange="onBodyLimitsChange"
+          ></tag-picker>
+          <view wx:if="{{errors.body_limits}}" class="form-error">{{errors.body_limits}}</view>
+          <view class="form-hint">
+            仅采集你自述的身体限制/不适，不做医疗诊断，不替代医生或体育老师建议
+          </view>
+        </view>
+      </view>
+
+      <view class="form-foot-tip">🔒 约束只用于本机生成计划，不上传通讯录、不需要手机号</view>
+      <view class="bottom-placeholder"></view>
+    </state-view>
+  </view>
+
+  <!-- ===================== 吸底提交栏 ===================== -->
+  <view wx:if="{{viewState === 'done'}}" class="bottom-bar">
+    <view class="bottom-bar-inner">
+      <view class="bottom-bar-note">
+        <text class="bottom-bar-note-main">免费 · 无需采集手机号</text>
+        <text class="bottom-bar-note-sub">已选 {{form.target_events.length}} 个体测项目</text>
+      </view>
+      <view
+        class="btn btn-primary bottom-submit {{submitting ? 'btn-disabled' : ''}}"
+        bindtap="onSubmit"
+      >
+        <view wx:if="{{submitting}}" class="btn-spin spin"></view>
+        <text>{{submitText}}</text>
+      </view>
+    </view>
+  </view>
+</view>

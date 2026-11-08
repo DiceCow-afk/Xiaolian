@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "动作示范",
+  "navigationBarBackgroundColor": "#172033",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F4F6FA",
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "state-view": "../../components/state-view/index",
+    "empty-state": "../../components/empty-state/index"
+  }
+}

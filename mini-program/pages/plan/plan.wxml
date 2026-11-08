@@ -1,0 +1,190 @@
+<view class="page page--plan">
+  <!-- 深色 Hero：导航栏同为 #172033，避免色带割裂 -->
+  <view class="hero hero-dark hero--plan">
+    <view class="hero-deco hero-deco-1"></view>
+    <view class="hero-deco hero-deco-2"></view>
+    <text class="hero-kicker">{{heroKicker}}</text>
+    <view class="hero-title">{{heroTitle}}</view>
+    <view class="hero-sub">{{heroSub}}</view>
+    <view class="hero-meta" wx:if="{{heroMeta.length}}">
+      <view class="hero-meta-item" wx:for="{{heroMeta}}" wx:key="label">
+        <text class="hero-meta-value">{{item.value}}</text>
+        <text class="hero-meta-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="content">
+    <state-view
+      state="{{viewState}}"
+      text="{{stateText}}"
+      error-title="计划加载失败"
+      retry-text="重新加载"
+      bindretry="loadData"
+    >
+      <!-- 空状态：还没有计划 -->
+      <view wx:if="{{!plan}}" class="empty-wrap">
+        <empty-state
+          icon="🏃"
+          title="还没有训练计划"
+          desc="完成约束输入后，会根据你的体测弱项生成 4 周计划"
+          action-text="去填写约束"
+          bindaction="goConstraints"
+        ></empty-state>
+        <view class="empty-extra">4 周周期化 · 硬约束过滤 · 安全优先</view>
+      </view>
+
+      <block wx:if="{{plan}}">
+        <!-- 过期提示：计划日期已过，提供重新生成出口 -->
+        <view wx:if="{{stale}}" class="notice notice--warn fade-in">
+          <view class="notice-main">
+            <text class="notice-icon">⚠️</text>
+            <view class="notice-text">
+              <view class="notice-title">计划日期已过期</view>
+              <view class="notice-desc">计划生成于 {{daysOld}} 天前，训练日期已过期</view>
+            </view>
+          </view>
+          <view class="notice-btn {{regenerating ? 'is-disabled' : ''}}" bindtap="onRegenerate">
+            {{regenerating ? '生成中' : '重新生成'}}
+          </view>
+        </view>
+
+        <!-- 约束已改未重算 -->
+        <view wx:if="{{profileDirty}}" class="notice notice--info fade-in">
+          <view class="notice-main">
+            <text class="notice-icon">💡</text>
+            <view class="notice-text">
+              <view class="notice-title">约束已修改，当前计划待重算</view>
+              <view class="notice-desc">重算后会按新的器械 / 空间 / 身体限制重新过滤动作</view>
+            </view>
+          </view>
+          <view class="notice-btn {{regenerating ? 'is-disabled' : ''}}" bindtap="onRegenerate">
+            {{regenerating ? '生成中' : '重算计划'}}
+          </view>
+        </view>
+
+        <!-- 4 周切换器（阶段徽标用 PHASE_META 颜色） -->
+        <view class="week-switch fade-in">
+          <view
+            wx:for="{{weeksView}}"
+            wx:key="week_no"
+            class="week-tab {{activeWeek === index ? 'is-active' : ''}}"
+            data-index="{{index}}"
+            bindtap="onWeekTap"
+          >
+            <view wx:if="{{currentWeekIndex === index}}" class="week-tab-dot"></view>
+            <text class="week-tab-no">第{{item.week_no}}周</text>
+            <text class="week-tab-phase" style="color: {{item.phase_color}};">{{item.phase_short}}</text>
+          </view>
+        </view>
+
+        <!-- 周概览 -->
+        <view wx:if="{{activeWeekData}}" class="card week-ov fade-in">
+          <view class="ov-hd">
+            <view class="ov-main">
+              <view class="ov-title">第 {{activeWeekData.week_no}} 周 · {{activeWeekData.phase_name}}</view>
+              <view class="ov-date">
+                {{activeWeekData.date_range_text}} · 目标完成 {{activeWeekData.target_completion}} 次
+              </view>
+            </view>
+            <view
+              class="phase-badge"
+              style="color: {{activeWeekData.phase_color}}; background: {{activeWeekData.phase_bg}};"
+            >{{activeWeekData.phase_short}}</view>
+          </view>
+          <view class="ov-focus">
+            <text class="ov-focus-label">本周重点</text>
+            <text class="ov-focus-text">{{activeWeekData.weekly_focus}}</text>
+          </view>
+          <view class="ov-note">阶段说明 · {{activeWeekData.note}}</view>
+        </view>
+
+        <!-- 训练日列表 -->
+        <view class="section-hd">
+          <text class="section-title">训练日安排</text>
+          <text class="section-extra">共 {{activeWeekData.session_count}} 个训练日</text>
+        </view>
+        <plan-card
+          wx:for="{{activeWeekData.sessions}}"
+          wx:key="session_id"
+          session="{{item}}"
+          mode="full"
+          show-status="{{true}}"
+          bindactiontap="onActionTap"
+          bindcheckin="onCheckin"
+        ></plan-card>
+        <view wx:if="{{activeWeekData.session_count === 0}}" class="day-empty">
+          本周还没有训练日安排，下拉刷新试试
+        </view>
+
+        <!-- 安全拦截（无拦截时组件自身不渲染） -->
+        <safety-banner
+          intercepts="{{safetyIntercepts}}"
+          title="安全拦截"
+          collapsible="{{true}}"
+        ></safety-banner>
+
+        <!-- 计划解释卡 -->
+        <view class="card explain-card">
+          <view class="card-hd">
+            <view class="card-title">这份计划怎么来的？</view>
+            <view class="explain-tag">AI 只读解释</view>
+          </view>
+          <view class="card-sub">依据体测弱项、现实约束与安全规则生成；解释不会修改计划内容</view>
+          <view class="btn btn-ghost btn-block mt-24 explain-btn" bindtap="onExplainTap">
+            为什么这样安排？
+          </view>
+        </view>
+
+        <!-- 底部操作区 -->
+        <view class="btn-row bottom-actions">
+          <view class="btn btn-ghost" bindtap="onEditConstraints">调整约束</view>
+          <view
+            class="btn btn-outline {{regenerating ? 'btn-disabled' : ''}}"
+            bindtap="onRegenerate"
+          >{{regenerating ? '生成中…' : '重新生成计划'}}</view>
+        </view>
+        <view class="safe-bottom"></view>
+      </block>
+    </state-view>
+  </view>
+
+  <!-- 计划解释底部弹层 -->
+  <view wx:if="{{explainVisible}}" class="ex-mask" bindtap="onCloseExplain">
+    <view class="ex-sheet slide-up" catchtap="noop">
+      <view class="ex-hd">
+        <view class="ex-hd-main">
+          <view class="ex-title">计划解释</view>
+          <view class="ex-badge">AI 解释 · 只读，不改变计划</view>
+        </view>
+        <view class="ex-close" bindtap="onCloseExplain">×</view>
+      </view>
+
+      <view wx:if="{{explainLoading}}" class="ex-loading">
+        <view class="ex-spinner spin"></view>
+        <text class="ex-loading-text">AI 正在解释这份计划的安排逻辑…</text>
+      </view>
+
+      <view wx:elif="{{explainError}}" class="ex-error">
+        <text class="ex-error-icon">💡</text>
+        <text class="ex-error-text">{{explainError}}</text>
+        <view class="ex-retry" bindtap="onRetryExplain">重试</view>
+      </view>
+
+      <scroll-view wx:else scroll-y class="ex-body" style="max-height: 50vh;">
+        <view
+          wx:for="{{explainLines}}"
+          wx:key="key"
+          class="ex-line {{item.blank ? 'ex-line--blank' : ''}} {{item.heading ? 'ex-line--heading' : ''}}"
+        >
+          <text wx:if="{{!item.blank}}" class="ex-line-text">{{item.text}}</text>
+        </view>
+      </scroll-view>
+
+      <view class="ex-ft">
+        <view class="btn btn-primary btn-block" bindtap="onCloseExplain">知道了</view>
+        <view wx:if="{{explainModel}}" class="ex-model">解释由 {{explainModel}} 生成 · 仅供参考</view>
+      </view>
+    </view>
+  </view>
+</view>

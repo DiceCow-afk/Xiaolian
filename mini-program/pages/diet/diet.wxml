@@ -1,0 +1,182 @@
+<view class="page page--diet">
+  <!-- ===================== Hero ===================== -->
+  <view class="hero hero-green">
+    <view class="hero-deco hero-deco-1"></view>
+    <view class="hero-deco hero-deco-2"></view>
+    <view class="hero-deco hero-deco-3"></view>
+    <text class="hero-kicker">轻量饮食提示 · 拓展</text>
+    <view class="hero-title">练得对，也吃得够</view>
+    <view class="hero-sub">只看两个与训练关联的维度：蛋白质是否够、训练日主食是否够；不做精确热量计算，不作营养处方</view>
+    <view class="hero-meta">
+      <view class="hero-meta-item">
+        <text class="hero-meta-value hero-meta-value--sm">{{trainingLabel}}</text>
+        <text class="hero-meta-label">今日训练</text>
+      </view>
+      <view class="hero-meta-item">
+        <text class="hero-meta-value">{{proteinText}}</text>
+        <text class="hero-meta-label">蛋白质摄入</text>
+      </view>
+      <view class="hero-meta-item">
+        <text class="hero-meta-value">{{carbText}}</text>
+        <text class="hero-meta-label">碳水摄入</text>
+      </view>
+      <view class="hero-meta-item hero-meta-item--tap" bindtap="onShowDisclaimer">
+        <text class="hero-meta-value hero-meta-value--sm">查看</text>
+        <text class="hero-meta-label">ℹ️ 免责说明</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="content">
+    <state-view
+      state="{{viewState}}"
+      text="{{errorText || loadingText}}"
+      error-title="饮食提示加载失败"
+      retry-text="重新加载"
+      bindretry="loadData"
+    >
+      <!-- ============ 今日训练类型卡 ============ -->
+      <view class="card train-card">
+        <view class="train-hd">
+          <view class="train-emoji">{{isRest ? '😴' : '🏃'}}</view>
+          <view class="train-main">
+            <view class="train-label">{{trainingLabel}}</view>
+            <view class="train-title">{{trainingTitle}}</view>
+          </view>
+          <view class="tag {{isRest ? 'tag-info' : 'tag-success'}}">{{isRest ? '休息日' : '训练日'}}</view>
+        </view>
+        <view class="train-note">
+          提示会随训练类型变化：训练日主食目标更高，休息日更关注蛋白质与蔬菜；没有计划或休息日也能查看基础提示。
+        </view>
+        <view class="train-ft">
+          <text class="text-xs text-muted">{{dateText}} · 今日饮食参考</text>
+          <view class="btn btn-ghost btn-sm train-btn" bindtap="onGoTraining">
+            {{isRest ? '查看训练计划' : '去打卡'}}
+          </view>
+        </view>
+      </view>
+
+      <!-- ============ 食物选择卡 ============ -->
+      <view class="card food-card">
+        <view class="card-hd">
+          <view class="flex-1">
+            <view class="card-title">今天吃了什么？</view>
+            <view class="card-sub">选几样常吃的，看看两个维度是否够；不选也能看基础提示</view>
+          </view>
+          <view wx:if="{{selectedCount}}" class="tag tag-brand">已选 {{selectedCount}} 份</view>
+        </view>
+
+        <view class="food-group" wx:for="{{foodGroups}}" wx:key="key" wx:for-item="group">
+          <view class="food-group-hd">
+            <text class="food-group-title">{{group.icon}} {{group.title}}</text>
+            <text class="food-group-desc">{{group.desc}}</text>
+          </view>
+          <tag-picker
+            options="{{group.options}}"
+            value="{{group.value}}"
+            multiple="{{true}}"
+            bindchange="onFoodGroupChange"
+            data-group="{{group.key}}"
+          ></tag-picker>
+        </view>
+
+        <view class="divider"></view>
+        <view class="intake-hd">
+          <text class="intake-title">粗略摄入汇总</text>
+          <text wx:if="{{tipsLoading}}" class="intake-updating pulse">更新中…</text>
+          <text wx:else class="text-xs text-muted">按所选份数估算</text>
+        </view>
+        <view class="stat-row mt-12">
+          <view class="stat">
+            <view class="stat-value">{{intake.protein_g}}<text class="stat-unit">g</text></view>
+            <view class="stat-label">蛋白质</view>
+          </view>
+          <view class="stat">
+            <view class="stat-value">{{intake.carb_g}}<text class="stat-unit">g</text></view>
+            <view class="stat-label">碳水</view>
+          </view>
+          <view class="stat">
+            <view class="stat-value">{{intake.kcal}}<text class="stat-unit">kcal</text></view>
+            <view class="stat-label">约热量</view>
+          </view>
+        </view>
+        <view wx:if="{{intake.items.length}}" class="food-picked">
+          <view class="food-picked-item" wx:for="{{intake.items}}" wx:key="food_id">
+            {{item.name}} ×{{item.portion}}
+          </view>
+        </view>
+      </view>
+
+      <!-- ============ 两个维度提示卡 ============ -->
+      <view class="section-hd">
+        <text class="section-title">训练相关的两个维度</text>
+        <text class="section-extra">规则判断 · 非处方</text>
+      </view>
+
+      <block wx:if="{{hasTips}}">
+        <view
+          class="card tip-card {{tipsLoading ? 'tip-card--updating' : ''}}"
+          wx:for="{{tips}}"
+          wx:key="dimension"
+        >
+          <view class="tip-hd">
+            <view class="tip-title-wrap">
+              <view class="tip-icon">{{item.icon}}</view>
+              <view class="tip-title-main">
+                <view class="card-title">{{item.label}}</view>
+                <view class="card-sub">{{item.desc}}</view>
+              </view>
+            </view>
+            <view class="tag {{item.level_class}}">{{item.level_label}}</view>
+          </view>
+          <view class="tip-nums">
+            <text class="tip-num">实际 {{item.actual_g}} g</text>
+            <text class="tip-num tip-num--target">目标 {{item.target_g}} g（{{item.percent}}%）</text>
+          </view>
+          <view class="progress tip-progress">
+            <view class="progress-bar {{item.bar_class}}" style="width: {{item.percent}}%"></view>
+          </view>
+          <view class="tip-message">{{item.message}}</view>
+          <view wx:if="{{item.suggested_foods.length}}" class="tip-suggest">
+            <text class="tip-suggest-label">可以补充：</text>
+            <view class="tip-suggest-list">
+              <view
+                class="chip chip-sm suggest-chip {{food.added ? 'suggest-chip--added' : ''}}"
+                wx:for="{{item.suggested_foods}}"
+                wx:for-item="food"
+                wx:key="food_id"
+                data-food-id="{{food.food_id}}"
+                bindtap="onAddSuggested"
+              >
+                <text>{{food.added ? '✓' : '＋'}}</text>
+                <text>{{food.name}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <view wx:else class="card">
+        <empty-state
+          icon="🥗"
+          title="暂时没有饮食提示"
+          desc="可以先选择今天吃过的食物，或重新获取一次；休息日也能使用基础提示"
+          action-text="重新获取"
+          bindaction="loadData"
+        ></empty-state>
+      </view>
+
+      <!-- ============ 免责声明卡 ============ -->
+      <view class="card diet-disclaimer">
+        <view class="diet-disclaimer-hd">
+          <text class="diet-disclaimer-icon">🛡️</text>
+          <text class="diet-disclaimer-title">饮食提示说明</text>
+        </view>
+        <view class="diet-disclaimer-text">{{disclaimer}}</view>
+        <view class="diet-disclaimer-foot">数据来源：常见食物成分概值 · 仅作一般性饮食参考</view>
+      </view>
+
+      <view class="safe-bottom"></view>
+    </state-view>
+  </view>
+</view>

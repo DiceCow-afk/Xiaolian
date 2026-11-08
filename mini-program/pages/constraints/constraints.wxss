@@ -1,0 +1,383 @@
+/* 约束输入页（页面级样式，组件样式由各组件自带） */
+.page--constraints {
+  padding-bottom: 0;
+}
+/* 吸底栏为 fixed，留白需覆盖按钮 + 安全区 */
+.page--constraints .bottom-placeholder {
+  height: calc(210rpx + env(safe-area-inset-bottom));
+}
+
+/* ================= 编辑模式提示条 ================= */
+.edit-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 22rpx;
+  background: var(--xl-brand-soft);
+  border: 2rpx solid var(--xl-brand-line);
+}
+.edit-bar-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.edit-bar-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--xl-brand-deep);
+}
+.edit-bar-desc {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #b05a2a;
+}
+.edit-bar-btn {
+  flex-shrink: 0;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--xl-brand);
+  background: #ffffff;
+  border: 2rpx solid var(--xl-brand-line);
+}
+.edit-bar-btn:active {
+  opacity: 0.8;
+}
+
+/* ================= 冷启动提示 ================= */
+.cold-tip {
+  margin-bottom: 24rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 22rpx;
+  font-size: 24rpx;
+  line-height: 1.55;
+  color: var(--xl-brand-deep);
+  background: var(--xl-brand-soft);
+}
+
+/* 2001 空态卡片：内部 empty-state 自带留白 */
+.empty-card {
+  padding: 8rpx 16rpx 20rpx;
+}
+
+/* ================= AI 解析卡 ================= */
+.ai-card {
+  overflow: hidden;
+  border: 2rpx solid #ffe1d2;
+  background: linear-gradient(180deg, #fffaf7 0%, #ffffff 46%);
+}
+.ai-badge {
+  flex-shrink: 0;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6b2c 0%, #ff9a5a 100%);
+  box-shadow: 0 8rpx 18rpx rgba(255, 107, 44, 0.28);
+}
+.ai-textarea {
+  min-height: 168rpx;
+  background: #ffffff;
+  border-color: #ffe1d2;
+}
+.parse-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+.parse-tools-left {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  min-width: 0;
+}
+.example-chip {
+  color: var(--xl-brand);
+  background: var(--xl-brand-soft);
+  border-radius: 999rpx;
+}
+.parse-btn {
+  min-width: 190rpx;
+  height: 68rpx;
+}
+.btn-spin {
+  width: 26rpx;
+  height: 26rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  box-sizing: border-box;
+}
+.parse-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 18rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 20rpx;
+  background: var(--xl-success-soft);
+  border: 2rpx solid #c9f0da;
+}
+.parse-result-icon {
+  font-size: 28rpx;
+  line-height: 1.4;
+}
+.parse-result-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.parse-result-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #0d8f52;
+}
+.parse-result-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #3f8f66;
+}
+.parse-fail {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 18rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 20rpx;
+  background: var(--xl-warning-soft);
+  border: 2rpx solid #ffe3ad;
+}
+.parse-fail-icon {
+  font-size: 28rpx;
+  line-height: 1.4;
+}
+.parse-fail-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.parse-fail-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #b96a00;
+}
+.parse-fail-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #a06a1e;
+}
+.parse-fail-close {
+  flex-shrink: 0;
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 30rpx;
+  line-height: 1;
+  color: #b96a00;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ================= 卡片内编号 ================= */
+.step-badge {
+  flex-shrink: 0;
+  font-size: 34rpx;
+  font-weight: 700;
+  font-style: italic;
+  color: #e6ebf4;
+  line-height: 1.1;
+  letter-spacing: 2rpx;
+}
+
+/* ================= 表单高亮（AI 回填提示） ================= */
+.card .form-item:last-child {
+  margin-bottom: 0;
+}
+.form-item--hl {
+  margin-left: -14rpx;
+  margin-right: -14rpx;
+  padding: 14rpx;
+  border-radius: 20rpx;
+  background: var(--xl-brand-soft);
+  animation: constraint-hl 1.2s ease-in-out 2;
+}
+@keyframes constraint-hl {
+  0%,
+  100% {
+    background: var(--xl-brand-soft);
+  }
+  50% {
+    background: #ffe2d4;
+  }
+}
+
+/* ================= 体测项目档位行 ================= */
+.event-list {
+  margin-top: 8rpx;
+}
+.event-row {
+  margin-top: 18rpx;
+  padding: 20rpx 22rpx;
+  border-radius: 20rpx;
+  background: #f8fafd;
+  border: 2rpx solid var(--xl-line-2);
+}
+.event-hd {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  margin-bottom: 14rpx;
+}
+.event-name {
+  flex-shrink: 0;
+  font-size: 27rpx;
+  font-weight: 600;
+  color: var(--xl-ink);
+}
+.event-desc {
+  flex: 1;
+  min-width: 0;
+  font-size: 21rpx;
+  color: var(--xl-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.event-threshold {
+  margin-top: 12rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 14rpx;
+  font-size: 22rpx;
+  line-height: 1.55;
+  color: var(--xl-brand-deep);
+  background: var(--xl-brand-soft);
+}
+.event-threshold--empty {
+  color: var(--xl-muted);
+  background: #f1f4f9;
+}
+
+/* ================= 体测日期 ================= */
+.date-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 20rpx;
+  background: #f5f7fb;
+  border: 2rpx solid transparent;
+}
+.date-picker:active {
+  background: #eef2f8;
+}
+.date-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.date-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--xl-ink);
+  font-variant-numeric: tabular-nums;
+}
+.date-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--xl-muted);
+}
+.date-side {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rpx;
+}
+.date-days {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--xl-brand);
+  font-variant-numeric: tabular-nums;
+}
+.date-icon {
+  font-size: 24rpx;
+  opacity: 0.75;
+}
+
+/* ================= 每周训练次数 ================= */
+.freq-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+.freq-hint {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.freq-hint-main {
+  font-size: 25rpx;
+  color: var(--xl-ink-2);
+}
+.freq-hint-sub {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--xl-muted-2);
+}
+
+/* ================= 页脚与吸底栏 ================= */
+.form-foot-tip {
+  padding: 6rpx 8rpx 12rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--xl-muted-2);
+  text-align: center;
+}
+.bottom-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+}
+.bottom-bar-note {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 250rpx;
+}
+.bottom-bar-note-main {
+  font-size: 21rpx;
+  font-weight: 600;
+  color: var(--xl-ink-2);
+}
+.bottom-bar-note-sub {
+  margin-top: 2rpx;
+  font-size: 20rpx;
+  color: var(--xl-muted-2);
+}
+.bottom-submit {
+  flex: 1;
+  min-width: 0;
+  height: 88rpx;
+  font-size: 29rpx;
+  padding: 0 18rpx;
+}
